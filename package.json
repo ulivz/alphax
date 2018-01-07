@@ -1,6 +1,6 @@
 {
-  "name": "fsy",
-  "version": "0.0.0",
+  "name": "alphax",
+  "version": "0.0.1",
   "description": "my beautiful project",
   "repository": {
     "url": "ULIVZ/alphaX",
@@ -36,7 +36,7 @@
   "bili": {
     "input": "src/index.ts",
     "js": "typescript",
-    "filename": "fsy.js"
+    "filename": "alphax.js"
   },
   "babel": {
     "env": {

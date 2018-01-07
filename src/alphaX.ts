@@ -3,10 +3,9 @@ import fs from 'fs-extra'
 import { EventEmitter } from 'events'
 import ware from 'ware'
 import dest from './dest'
-import { isPromise } from "../src2/utils";
-import { isArray } from "./utils";
+import { isArray, isPromise } from "./utils"
 
-type Middleware = (ctx: Scaffold) => any
+type Middleware = (ctx: AlphaX) => any
 type Glob = string[]
 type TransformFn = (contents: string) => Promise<string> | string
 
@@ -18,7 +17,7 @@ interface filterConfig {
   [pattern: string]: boolean
 }
 
-class Scaffold extends EventEmitter {
+class AlphaX extends EventEmitter {
   private middlewares: Middleware[]
   private patterns: Glob
   private renameConfig: RenameConfig
@@ -121,4 +120,4 @@ class Scaffold extends EventEmitter {
   }
 }
 
-export default () => new Scaffold()
+export default () => new AlphaX()
