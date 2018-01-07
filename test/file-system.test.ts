@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import fx from '../src2/index.ts'
+import fx from '../src/lagacy/index.ts'
 
 function beautifyJSON(ob) {
   return JSON.stringify(ob, null, 2)

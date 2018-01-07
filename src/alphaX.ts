@@ -10,21 +10,6 @@ type Middleware = (ctx: Scaffold) => any
 type Glob = string[]
 type TransformFn = (contents: string) => Promise<string> | string
 
-interface Files {
-  [relativePath: string]: File
-}
-
-interface File {
-  path?: string,
-  contents: Buffer,
-  stats: fs.Stats,
-  [key: string]: any
-}
-
-interface StatCache {
-  [path: string]: fs.Stats
-}
-
 interface RenameConfig {
   [oldname: string]: string
 }
@@ -41,7 +26,6 @@ class Scaffold extends EventEmitter {
   private dotFiles: boolean
   public meta: any
   public baseDir: string
-  public files: Files
   public transformFn: TransformFn
 
   constructor() {

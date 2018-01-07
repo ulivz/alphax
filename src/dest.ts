@@ -1,4 +1,3 @@
-import * as path from 'path'
 import * as vinyl from 'vinyl-fs'
 import * as File from 'vinyl'
 import * as es from 'event-stream'
