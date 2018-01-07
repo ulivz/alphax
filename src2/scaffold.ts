@@ -64,8 +64,6 @@ class Scaffold {
       rename: this.renameConfig
     })
 
-    console.log(this.files)
-
     // await Promise.all(paths.map((relative: string) => {
     //   const absolutePath = path.resolve(this.baseDir, relative)
     //   return fs.readFile(absolutePath)

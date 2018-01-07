@@ -1,4 +1,5 @@
 const globby = require('globby')
+const glob = require('glob')
 const path = require('path')
 
 globby(['test/**/*', '!test/fixtures/**/*'])
@@ -6,6 +7,14 @@ globby(['test/**/*', '!test/fixtures/**/*'])
     console.log(files)
   })
 
+
+glob('*', function (er, files) {
+  console.log(files)
+  // files is an array of filenames.
+  // If the `nonull` option is set, and nothing
+  // was found, then files is ["**/*.js"]
+  // er is an error object or null.
+})
 
 /* { cwd: path.resolve(__dirname, 'src') }*/
 

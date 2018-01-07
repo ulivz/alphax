@@ -4,7 +4,6 @@ import AbstractFileNode from './abstract_node'
 import { IJsonTreeNode } from './abstract_node'
 import FileNode from './file_node'
 import globby from 'globby'
-import { match } from './match'
 import { isString, isArray, isPlainObject, isFunction, isUndefined } from './utils'
 
 type Node = DirectoryNode | FileNode
@@ -56,7 +55,6 @@ class DirectoryNode extends AbstractFileNode {
       .map(nodeName => getChildNode(nodeName, this))
 
     await Promise.all(this.nodes
-      .filter(childNode => childNode.isDirectory)
       .map((childNode: DirectoryNode) => childNode.traverse()))
   }
 
@@ -74,27 +72,28 @@ class DirectoryNode extends AbstractFileNode {
   }
 
   async _processGlob(glob) {
-    console.log(glob)
     if (isArray(glob) || isString(glob)) {
       let files: string[] = await globby(glob, {
         cwd: this.cwd
       })
+
+      // console.log(files)
+	  //
+      // let tokens = new Set(files)
+      // for (let item of files.map(i => i.split('/'))) {
+      //   item.pop()
+      //   while (item.length) {
+      //     tokens.add(item.join('/'))
+      //     item.pop()
+      //   }
+      // }
+      // let tokenList = [...tokens]
+
       console.log(files)
-      let tokens = new Set(files)
-      for (let item of files.map(i => i.split('/'))) {
-        item.pop()
-        while (item.length) {
-          tokens.add(item.join('/'))
-          item.pop()
-        }
-      }
-      let tokenList = [...tokens]
-      console.log('=====')
-      console.log(tokenList)
-      const filterFn = node => tokenList.indexOf(node.relative) > -1
+      const filterFn = node => files.indexOf(node.relative) > -1
       this.filter(filterFn)
     } else {
-      console.log(`Expect: glob to be string or array, received ${typeof glob}`)
+      console.log(`Expect glob to be string or array, received ${typeof glob}`)
     }
   }
 
@@ -145,21 +144,17 @@ class DirectoryNode extends AbstractFileNode {
   }
 
   filter(handler) {
-    this.nodes = this.nodes
-      .filter(childNode => {
-        if (handler(childNode)) {
-          if (childNode.isDirectory) {
-            (<DirectoryNode>childNode).filter(handler)
-          }
-          return true
-        }
-        console.log('filtered: ' + childNode.relative)
-        return false
-      })
-  }
-
-  ignore(ignore) {
-    this.filter(node => !match(node.relative, ignore))
+    this.nodes = this.nodes.filter(childNode => {
+      console.log(childNode.label, handler(childNode))
+      if (handler(childNode)) {
+        return true
+      }
+      if (childNode.isDirectory) {
+        (<DirectoryNode>childNode).filter(handler)
+      }
+      console.log('filtered: ' + childNode.relative)
+      return false
+    })
   }
 
   setpath(newpath) {

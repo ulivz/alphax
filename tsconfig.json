@@ -10,7 +10,7 @@
       "allowSyntheticDefaultImports": true
   },
   "include": [
-      "src/**/*"
+    "src2/**/*"
   ],
   "exclude": [
       "node_modules"

@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import AbstractFileNode from './abstract_node'
 import { IJsonTreeNode } from './abstract_node'
 
@@ -16,16 +16,12 @@ export default class FileNode extends AbstractFileNode {
     return fn(this)
   }
 
-  toJSON() {
-    return this._toJSON()
+  async traverse() {
+    this.contents = await fs.readFile(this.path)
   }
 
-  get contents() {
-    if (this.contents) {
-      return this.contents
-    }
-    this.contents = fs.readFileSync(this.path)
-    return this.contents
+  toJSON() {
+    return this._toJSON()
   }
 
   setpath(newpath) {

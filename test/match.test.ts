@@ -1,4 +1,4 @@
-import { match } from '../src/match'
+import { match } from '../src2/match'
 
 describe('minimatch', () => {
 
