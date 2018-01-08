@@ -1,12 +1,13 @@
 import path from 'path'
 import fs from 'fs-extra'
+import * as File from 'vinyl'
 import { EventEmitter } from 'events'
 import ware from 'ware'
 import dest from './dest'
 import { isArray, isPromise } from "./utils"
 
-type Middleware = (ctx: AlphaX) => any
-type Glob = string[]
+type Middleware = (ctx: File) => any
+type Glob = string[] | string
 type TransformFn = (contents: string) => Promise<string> | string
 
 interface RenameConfig {
@@ -19,12 +20,12 @@ interface filterConfig {
 
 class AlphaX extends EventEmitter {
   private middlewares: Middleware[]
-  private patterns: Glob
+  private patterns: string[]
   private renameConfig: RenameConfig
   private filterConfig: filterConfig
   private dotFiles: boolean
   public meta: any
-  public baseDir: string
+  public base: string
   public transformFn: TransformFn
 
   constructor() {
@@ -34,13 +35,11 @@ class AlphaX extends EventEmitter {
   }
 
   src(patterns: Glob, {
-    baseDir = '.',
     rename = {},
     filter = {},
     transformFn,
     dotFiles = true,
   } = {}) {
-    this.baseDir = path.resolve(baseDir)
     this.patterns = isArray(patterns) ? patterns : [patterns]
     this.dotFiles = dotFiles
     this.renameConfig = rename
@@ -49,36 +48,18 @@ class AlphaX extends EventEmitter {
     return this
   }
 
-  getNewName(name: string): string {
-    Object.keys(this.renameConfig).forEach(pattern => {
-      name = name.replace(pattern, this.renameConfig[pattern])
-    })
-    return name
-  }
-
-  async transformer(file) {
+  async transformer(file: File) {
     // 1. middleware
     await new Promise((resolve, reject) => {
-      ware().use(this.middlewares).run(file, this, (err: Error) => {
+      ware().use(this.middlewares).run(file, (err: Error) => {
         if (err) return reject(err)
         resolve()
       })
     })
 
-    // 2. rename
-    let oldRelative = file.relative
-    let newName = path.join(file.base, this.getNewName(file.relative))
-    if (file.path !== newName) {
-      file.path = newName
-      this.emit('rename', {
-        oldname: oldRelative,
-        newname: file.relative
-      })
-    }
-
     // 3. transform
     if (!file.isDirectory()) {
-      const contents = file.contents.toString()
+      const contents = (<Buffer>file.contents).toString()
       let result = this.transformFn(contents)
       if (isPromise(result)) {
         result = await result
@@ -87,18 +68,41 @@ class AlphaX extends EventEmitter {
     }
   }
 
-  use(middleware: Middleware) {
+  public use(middleware: Middleware) {
     this.middlewares.push(middleware)
     return this
   }
 
-  async dest(destPath: string, {
+  public async dest(destPath: string, {
+    base = '.',
     clean = false
   } = {}) {
-    destPath = path.resolve(this.baseDir, destPath)
+    this.base = base
+    destPath = path.resolve(this.base, destPath)
 
     if (clean) {
       await fs.remove(destPath)
+    }
+
+    // Add rename middleware.
+    if (this.renameConfig) {
+      const getNewName = (name: string): string => {
+        Object.keys(this.renameConfig).forEach(pattern => {
+          name = name.replace(pattern, this.renameConfig[pattern])
+        })
+        return name
+      }
+      this.use((file) => {
+        let oldRelative = file.relative
+        let newName = path.join(file.base, getNewName(file.relative))
+        if (file.path !== newName) {
+          file.path = newName
+          this.emit('rename', {
+            oldname: oldRelative,
+            newname: file.relative
+          })
+        }
+      })
     }
 
     if (this.filterConfig) {
@@ -113,6 +117,7 @@ class AlphaX extends EventEmitter {
       this.patterns,
       destPath,
       {
+        base,
         allowEmpty: true,
         transformer: this.transformer.bind(this)
       }

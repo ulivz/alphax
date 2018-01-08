@@ -14,8 +14,6 @@ export default async function dest(source: Glob,
                                    target: string,
                                    options?: Options = {}): Promise<ReadWriteStream> {
 
-  console.log(source)
-
   if (!isString(source) && !isArray(source)) {
     throw new Error('Expected "source" to be string or array.')
   }
@@ -50,12 +48,14 @@ export default async function dest(source: Glob,
     cb(null, file)
   }
 
-  stream
+  const destStream = stream
     .pipe(es.map(transform))
     .pipe(vinyl.dest(target))
 
   await new Promise((resolve, reject) => {
-    stream.on('end', () => resolve(stream))
-    stream.on('error', reject)
+    destStream.on('end', resolve)
+    destStream.on('error', reject)
   })
+
+  return stream
 }

@@ -1,4 +1,3 @@
-import fs from 'fs-extra'
 import alphaX from '../src/alphaX'
 import { SRC_DIR, getDistDir } from './utils'
 
