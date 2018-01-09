@@ -24,7 +24,7 @@ describe('alphax', () => {
           }
         }
       )
-      .dest()
+      .dest(DIST_DIR)
     const files = await globDir(DIST_DIR, { baseDir: DIST_DIR })
     expect(files).toMatchSnapshot()
   })

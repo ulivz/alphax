@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`alphax base 1`] = `
+Array [
+  "A",
+  "A/b.ts",
+]
+`;

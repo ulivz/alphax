@@ -77,8 +77,11 @@ class AlphaX extends EventEmitter {
     base = '.',
     clean = false
   } = {}) {
+    if (!destPath) {
+      throw new Error('dest path is required')
+    }
     this.base = base
-    destPath = path.resolve(this.base, destPath)
+    // destPath = path.resolve(this.base, destPath)
 
     if (clean) {
       await fs.remove(destPath)
@@ -93,7 +96,6 @@ class AlphaX extends EventEmitter {
         return name
       }
       this.use((file) => {
-        console.log(file)
         let oldRelative = file.relative
         let newName = path.join(file.base, getNewName(file.relative))
         if (file.path !== newName) {
@@ -118,7 +120,7 @@ class AlphaX extends EventEmitter {
       this.patterns,
       destPath,
       {
-        base,
+        // base,
         allowEmpty: true,
         transformer: this.transformer.bind(this)
       }
