@@ -1,11 +1,12 @@
-import alphaX from '../src/alphaX'
-import { SRC_DIR, getDistDir } from './utils'
+import alphaX from '../src/alphax'
+import { SRC_DIR, getDistDir, globDir } from './utils'
 
-describe('alphaX', () => {
+describe('alphax', () => {
 
-  test('alphaX01', async () => {
+  test('base', async () => {
+    const DIST_DIR = getDistDir('alphax-base')
     const app = alphaX()
-    app
+    await app
       .src(
         SRC_DIR + '/**',
         {
@@ -23,7 +24,9 @@ describe('alphaX', () => {
           }
         }
       )
-      .dest(getDistDir('alphaX01'))
+      .dest()
+    const files = await globDir(DIST_DIR, { baseDir: DIST_DIR })
+    expect(files).toMatchSnapshot()
   })
 
 })

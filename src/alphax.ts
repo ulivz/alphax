@@ -57,7 +57,7 @@ class AlphaX extends EventEmitter {
       })
     })
 
-    // 3. transform
+    // 2. transform
     if (!file.isDirectory()) {
       const contents = (<Buffer>file.contents).toString()
       let result = this.transformFn(contents)
@@ -93,6 +93,7 @@ class AlphaX extends EventEmitter {
         return name
       }
       this.use((file) => {
+        console.log(file)
         let oldRelative = file.relative
         let newName = path.join(file.base, getNewName(file.relative))
         if (file.path !== newName) {
