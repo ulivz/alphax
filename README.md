@@ -29,6 +29,67 @@ alphax()
   .dest('dist')
 ```
 
+## API
+
+```js
+const app = alphaX()
+```
+
+### app.src(globs, [options])
+
+#### globs
+
+Type: `string[]` `string`<br>
+Required: `true`
+
+The directory to find source files by given glob patterns. For example, if you want to check all the files in src, you can use `src/**`.
+
+#### options
+
+##### options.rename
+
+Type: `{ [key: string]: string }`<br>
+Required: `false`
+
+An object for rename. For example:
+
+```js
+  rename: {
+    'a': 'A', // All filenames containing 'a' will replace 'a' with 'A'
+    '.js': '.ts' // Modify the file extension
+  }
+```
+
+##### options.filter
+
+Type: `{ [key: string]: string }`<br>
+Required: `false`
+
+An object for filter. For example:
+
+```js
+  filter: {
+    'src/**': data.src, // The contents of src will be copied only if data.src is true 
+    'app/**': data.app  // ditto.
+  }
+```
+
+##### options.transformFn
+
+Type: `(contents: string) => Promise<string> | string`<br>
+Required: `false`
+
+A transform function, the first parameter is each file's contents, the returned string will be the new contents of the file.
+
+##### options.baseDir
+
+Type: `string`<br>
+Required: `false`
+Default: `.`
+
+Specify a baseDir, this path will be used for filter conversion.
+
+
 ## Contributing
 
 1. Fork it!

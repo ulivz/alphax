@@ -10,5 +10,6 @@ Array [
 exports[`alphax cwd 1`] = `
 Array [
   "A",
+  "A/b.ts",
 ]
 `;
