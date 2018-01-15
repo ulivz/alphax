@@ -1,6 +1,6 @@
 # alphax
 
-[![NPM version](https://img.shields.io/npm/v/alphaX.svg?style=flat)](https://npmjs.com/package/alphaX) [![NPM downloads](https://img.shields.io/npm/dm/alphaX.svg?style=flat)](https://npmjs.com/package/alphaX) [![CircleCI](https://circleci.com/gh/ULIVZ/alphaX/tree/master.svg?style=shield)](https://circleci.com/gh/ULIVZ/alphaX/tree/master)  [![codecov](https://codecov.io/gh/ULIVZ/alphaX/branch/master/graph/badge.svg)](https://codecov.io/gh/ULIVZ/alphaX)
+[![NPM version](https://img.shields.io/npm/v/alphax.svg?style=flat)](https://npmjs.com/package/alphax) [![NPM downloads](https://img.shields.io/npm/dm/alphax.svg?style=flat)](https://npmjs.com/package/alphax) [![CircleCI](https://circleci.com/gh/ULIVZ/alphax/tree/master.svg?style=shield)](https://circleci.com/gh/ULIVZ/alphax/tree/master)  [![codecov](https://codecov.io/gh/ULIVZ/alphax/branch/master/graph/badge.svg)](https://codecov.io/gh/ULIVZ/alphax)
  [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/ULIVZ/donate)
 
 Fuel of scaffolding.
@@ -14,17 +14,19 @@ BTW, alphx was named from the Greek initials `α` and [spaceX](http://www.spacex
 ## Install
 
 ```bash
-npm i alphaX --save
+npm i alphax --save
 # yarn add majo
 ```
 
 ## Usage
 
 ```js
-const app = require('alphax')()
+import { alphax } from 'alphax'
+// Or cjs: const app = require('alphax')
 
-
-//=> foo
+alphax()
+  .src('src/**')
+  .dest('dist')
 ```
 
 ## Contributing
@@ -38,7 +40,7 @@ const app = require('alphax')()
 
 ## Author
 
-**alphaX** © [ulivz](https://github.com/ULIVZ), Released under the [MIT](./LICENSE) License.<br>
-Authored and maintained by ulivz with help from contributors ([list](https://github.com/ULIVZ/alphaX/contributors)).
+**alphax** © [ulivz](https://github.com/ULIVZ), Released under the [MIT](./LICENSE) License.<br>
+Authored and maintained by ulivz with help from contributors ([list](https://github.com/ULIVZ/alphax/contributors)).
 
 > [github.com/ulivz](https://github.com/ulivz) · GitHub [@ulivz](https://github.com/ULIVZ)

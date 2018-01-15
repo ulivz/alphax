@@ -4,7 +4,7 @@ import * as File from 'vinyl'
 import { EventEmitter } from 'events'
 import ware from 'ware'
 import dest from './dest'
-import { isArray, isPromise } from "./utils"
+import { isArray, isFunction, isPromise } from "./utils"
 
 type Middleware = (ctx: File) => any
 type Glob = string[] | string
@@ -52,21 +52,32 @@ class AlphaX extends EventEmitter {
 
   async transformer(file: File) {
     // 1. middleware
-    await new Promise((resolve, reject) => {
-      ware().use(this.middlewares).run(file, (err: Error) => {
-        if (err) return reject(err)
-        resolve()
+    try {
+      await new Promise((resolve, reject) => {
+        ware().use(this.middlewares).run(file, (err: Error) => {
+          if (err) return reject(err)
+          resolve()
+        })
       })
-    })
+    } catch (error) {
+      console.log(error)
+    }
 
     // 2. transform
     if (!file.isDirectory()) {
-      const contents = (<Buffer>file.contents).toString()
-      let result = this.transformFn(contents)
-      if (isPromise(result)) {
-        result = await result
+      let contents: string = (<Buffer>file.contents).toString()
+      let transformRes: Promise | string;
+      if (isFunction(this.transformFn)) {
+        try {
+          transformRes = this.transformFn(contents)
+          if (isPromise(transformRes)) {
+            transformRes = await transformRes
+          }
+        } catch (err) {
+          console.error('Failed to transform file: ' + file.relative)
+        }
       }
-      file.contents = Buffer.from(result)
+      file.contents = Buffer.from(transformRes || contents)
     }
   }
 
