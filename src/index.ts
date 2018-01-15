@@ -1,4 +1,7 @@
-import alphaX from './alphax'
+import alphax from './alphax'
 import dest from './dest'
 
-export { alphaX as default, dest }
+export default {
+  alphax,
+  dest
+}

@@ -25,7 +25,7 @@ class AlphaX extends EventEmitter {
   private filterConfig: filterConfig
   private dotFiles: boolean
   public meta: any
-  public base: string
+  public baseDir: string
   public transformFn: TransformFn
 
   constructor() {
@@ -39,7 +39,9 @@ class AlphaX extends EventEmitter {
     filter = {},
     transformFn,
     dotFiles = true,
+    baseDir = '.'
   } = {}) {
+    this.baseDir = baseDir
     this.patterns = isArray(patterns) ? patterns : [patterns]
     this.dotFiles = dotFiles
     this.renameConfig = rename
@@ -74,13 +76,11 @@ class AlphaX extends EventEmitter {
   }
 
   public async dest(destPath: string, {
-    base = '.',
     clean = false
   } = {}) {
     if (!destPath) {
       throw new Error('dest path is required')
     }
-    this.base = base
     // destPath = path.resolve(this.base, destPath)
 
     if (clean) {
@@ -111,20 +111,26 @@ class AlphaX extends EventEmitter {
     if (this.filterConfig) {
       Object.keys(this.filterConfig).forEach(fileName => {
         if (!this.filterConfig[fileName]) {
-          this.patterns.push('!./**/' + fileName)
+          this.patterns.push('!' + path.join(this.baseDir, fileName))
         }
       })
     }
 
-    await dest(
+    console.log(this.patterns)
+
+    const stream = await dest(
       this.patterns,
       destPath,
       {
-        // base,
         allowEmpty: true,
         transformer: this.transformer.bind(this)
       }
     )
+
+    return new Promise((resolve, reject) => {
+      stream.on('end', resolve)
+      stream.on('error', reject)
+    })
   }
 }
 

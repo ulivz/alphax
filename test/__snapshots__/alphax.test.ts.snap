@@ -6,3 +6,5 @@ Array [
   "A/b.ts",
 ]
 `;
+
+exports[`alphax cwd 1`] = `Array []`;
