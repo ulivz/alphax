@@ -48,46 +48,46 @@ The directory to find source files by given glob patterns. For example, if you w
 
 ##### options.rename
 
-Type: `{ [key: string]: string }`<br>
-Required: `false`
+- Type: `{ [key: string]: string }`
+- Required: `false`
 
-An object for rename. For example:
-
-```js
-  rename: {
-    'a': 'A', // All filenames containing 'a' will replace 'a' with 'A'
-    '.js': '.ts' // Modify the file extension
-  }
-```
+  An object for rename. For example:
+  
+  ```js
+    rename: {
+      'a': 'A', // All filenames containing 'a' will replace 'a' with 'A'
+      '.js': '.ts' // Modify the file extension
+    }
+  ```
 
 ##### options.filter
 
-Type: `{ [key: string]: string }`<br>
-Required: `false`
+- Type: `{ [key: string]: string }`
+- Required: `false`
 
-An object for filter. For example:
-
-```js
-  filter: {
-    'src/**': data.src, // The contents of src will be copied only if data.src is true 
-    'app/**': data.app  // ditto.
-  }
-```
+  An object for filter. For example:
+  
+  ```js
+    filter: {
+      'src/**': data.src, // The contents of src will be copied only if data.src is true 
+      'app/**': data.app  // ditto.
+    }
+  ```
 
 ##### options.transformFn
 
-Type: `(contents: string) => Promise<string> | string`<br>
-Required: `false`
+- Type: `(contents: string) => Promise<string> | string`
+- Required: `false`
 
-A transform function, the first parameter is each file's contents, the returned string will be the new contents of the file.
+  A transform function, the first parameter is each file's contents, the returned string will be the new contents of the file.
 
 ##### options.baseDir
 
-Type: `string`<br>
-Required: `false`
-Default: `.`
+- Type: `string`
+- Required: `false`
+- Default: `.`
 
-Specify a baseDir, this path will be used for filter conversion.
+  Specify a baseDir, this path will be used for filter conversion.
 
 
 ## Contributing
