@@ -82,6 +82,7 @@ class AlphaX extends EventEmitter {
       throw new Error('dest path is required')
     }
     // destPath = path.resolve(this.base, destPath)
+    console.log(destPath)
 
     if (clean) {
       await fs.remove(destPath)
