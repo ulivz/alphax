@@ -15,7 +15,7 @@ BTW, alphx was named from the Greek initials `α` and [spaceX](http://www.spacex
 
 ```bash
 npm i alphax --save
-# yarn add majo
+# yarn add alphax
 ```
 
 ## Usage
@@ -32,14 +32,14 @@ alphax()
 ## API
 
 ```js
-const app = alphaX()
+const app = alphax()
 ```
 
 ### app.src(globs, [options])
 
 #### globs
 
-Type: `string[]` `string`<br>
+Type: `string[] | string`
 Required: `true`
 
 The directory to find source files by given glob patterns. For example, if you want to check all the files in src, you can use `src/**`.
