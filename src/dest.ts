@@ -10,7 +10,7 @@ interface Options extends vinyl.SrcOptions {
   transformer?: (file: File) => void
 }
 
-export default async function dest(source: Glob,
+export default function dest(source: Glob,
                                    target: string,
                                    options?: Options = {}): ReadWriteStream {
 

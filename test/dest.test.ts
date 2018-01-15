@@ -3,18 +3,26 @@ import * as File from 'vinyl'
 import dest from '../src/dest'
 import { SRC_DIR, getDistDir, globDir } from './utils'
 
+function destPromise(...args) {
+  const stream = dest(...args)
+  return new Promise((resolve, reject) => {
+    stream.on('end', resolve)
+    stream.on('error', reject)
+  })
+}
+
 describe('dest', () => {
 
   test('basic', async () => {
     const DIST_DIR = getDistDir('basic')
-    await dest(SRC_DIR + '/**', DIST_DIR)
+    await destPromise(SRC_DIR + '/**', DIST_DIR)
     const files = await globDir(DIST_DIR, { baseDir: DIST_DIR })
     expect(files).toMatchSnapshot()
   })
 
   test('ignore', async () => {
     const DIST_DIR = getDistDir('ignore')
-    await dest(
+    await destPromise(
       [
         SRC_DIR + '/**',
         '!' + SRC_DIR + '/d.js',
@@ -31,7 +39,7 @@ describe('dest', () => {
 
   test('rename', async () => {
     const DIST_DIR = getDistDir('rename')
-    await dest(
+    await destPromise(
       [
         SRC_DIR + '/**'
       ],

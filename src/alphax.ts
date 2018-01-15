@@ -117,9 +117,7 @@ class AlphaX extends EventEmitter {
       })
     }
 
-    console.log(this.patterns)
-
-    const stream = await dest(
+    const stream = dest(
       this.patterns,
       destPath,
       {
