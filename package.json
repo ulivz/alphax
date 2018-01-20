@@ -64,9 +64,7 @@
   "devDependencies": {
     "@types/event-stream": "^3.3.33",
     "@types/fs-extra": "^5.0.0",
-    "@types/globby": "^6.1.0",
     "@types/jest": "^22.0.1",
-    "@types/minimatch": "^3.0.3",
     "@types/node": "^8.5.7",
     "@types/vinyl-fs": "^2.4.8",
     "babel-preset-env": "^1.4.0",
