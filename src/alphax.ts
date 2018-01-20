@@ -34,7 +34,7 @@ class AlphaX extends EventEmitter {
     this.meta = {}
   }
 
-  src(patterns: Glob, {
+  public src(patterns: Glob, {
     rename = {},
     filter = {},
     transformFn,
@@ -50,37 +50,6 @@ class AlphaX extends EventEmitter {
     return this
   }
 
-  async transformer(file: File) {
-    // 1. middleware
-    try {
-      await new Promise((resolve, reject) => {
-        ware().use(this.middlewares).run(file, (err: Error) => {
-          if (err) return reject(err)
-          resolve()
-        })
-      })
-    } catch (error) {
-      console.log(error)
-    }
-
-    // 2. transform
-    if (!file.isDirectory()) {
-      let contents: string = (<Buffer>file.contents).toString()
-      let transformRes: Promise | string;
-      if (isFunction(this.transformFn)) {
-        try {
-          transformRes = this.transformFn(contents)
-          if (isPromise(transformRes)) {
-            transformRes = await transformRes
-          }
-        } catch (err) {
-          console.error('Failed to transform file: ' + file.relative)
-        }
-      }
-      file.contents = Buffer.from(transformRes || contents)
-    }
-  }
-
   public use(middleware: Middleware) {
     this.middlewares.push(middleware)
     return this
@@ -93,7 +62,6 @@ class AlphaX extends EventEmitter {
       throw new Error('dest path is required')
     }
     // destPath = path.resolve(this.base, destPath)
-    console.log(destPath)
 
     if (clean) {
       await fs.remove(destPath)
@@ -141,6 +109,37 @@ class AlphaX extends EventEmitter {
       stream.on('end', resolve)
       stream.on('error', reject)
     })
+  }
+
+  private async transformer(file: File) {
+    // 1. middleware
+    try {
+      await new Promise((resolve, reject) => {
+        ware().use(this.middlewares).run(file, (err: Error) => {
+          if (err) return reject(err)
+          resolve()
+        })
+      })
+    } catch (error) {
+      console.log(error)
+    }
+
+    // 2. transform
+    if (!file.isDirectory()) {
+      let contents: string = (<Buffer>file.contents).toString()
+      let transformRes: Promise | string;
+      if (isFunction(this.transformFn)) {
+        try {
+          transformRes = this.transformFn(contents)
+          if (isPromise(transformRes)) {
+            transformRes = await transformRes
+          }
+        } catch (err) {
+          console.error('Failed to transform file: ' + file.relative)
+        }
+      }
+      file.contents = Buffer.from(transformRes || contents)
+    }
   }
 }
 

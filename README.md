@@ -39,10 +39,10 @@ const app = alphax()
 
 #### globs
 
-Type: `string[] | string`
-Required: `true`
+- Type: `string[] | string`
+- Required: `true`
 
-The directory to find source files by given glob patterns. For example, if you want to check all the files in src, you can use `src/**`.
+  The directory to find source files by given glob patterns. For example, if you want to check all the files in src, you can use `src/**`.
 
 #### options
 
@@ -89,6 +89,36 @@ The directory to find source files by given glob patterns. For example, if you w
 
   Specify a baseDir, this path will be used for filter conversion.
 
+
+### app.use(middleware)
+
+#### middleware
+
+- Type: `(ctx: File) => any`
+- Required: `false`
+
+  alphax use [ware](https://github.com/segmentio/ware) to create middleware layer. All middlewares will run sequentially at the beginning of each file dest. A middleware accepts a [vinyl file](https://github.com/gulpjs/vinyl) as the first parameter, and you can do any possible convesion of file in the middleware. 
+ 
+  The [rename](#options-rename) function is also based on using its own middleware. 
+  
+  A simple logger middleware:
+  
+  ```js
+  app.use((file) => {
+	  console.log('Start to dest file: ' + file.relative)
+  })
+  ```
+  
+  
+### app.dest(destPath, [options])
+
+#### destPath
+
+- Type: `string`
+- Required: `true`
+
+  The real dest process. All selected files by globs will be passed through the middleware, filter, renmae, transform, and the final files will be generated. At this comment, an alphax app's life ends.
+  
 
 ## Contributing
 
