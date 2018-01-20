@@ -9,7 +9,7 @@ Fuel of scaffolding.
 
 alphax provides JSON-like APIs that allow you to manipulate files freely. Now it supports [glob](https://github.com/isaacs/node-glob), reanme, filter and transform during dest.
 
-BTW, alphx was named from the Greek initials `α` and [spaceX](http://www.spacex.com/) I admire.
+BTW, alphax was named from the Greek initials `α` and [spaceX](http://www.spacex.com/) I admire.
 
 ## Install
 

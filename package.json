@@ -6,7 +6,7 @@
     "url": "ULIVZ/alphaX",
     "type": "git"
   },
-  "main": "dist/index.common.js",
+  "main": "dist/alphax.js",
   "files": [
     "dist"
   ],
