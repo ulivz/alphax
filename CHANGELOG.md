@@ -1,3 +1,13 @@
+<a name="0.0.4"></a>
+## [0.0.4](https://github.com/ULIVZ/alphaX/compare/v0.0.3...v0.0.4) (2018-03-04)
+
+
+### Features
+
+* add type definition file ([41f3f94](https://github.com/ULIVZ/alphaX/commit/41f3f94))
+
+
+
 <a name="0.0.3"></a>
 ## [0.0.3](https://github.com/ULIVZ/alphaX/compare/v0.0.2...v0.0.3) (2018-01-20)
 
