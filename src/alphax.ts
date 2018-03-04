@@ -18,7 +18,7 @@ interface filterConfig {
   [pattern: string]: boolean
 }
 
-class AlphaX extends EventEmitter {
+export class AlphaX extends EventEmitter {
   private middlewares: Middleware[]
   private patterns: string[]
   private renameConfig: RenameConfig
