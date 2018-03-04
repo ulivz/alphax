@@ -11,7 +11,8 @@ const config = {
     'a': 'A',
     '.js': '.ts'
   },
-  transformFn(content) {
+  transformFn(content, file) {
+    console.log('Transform file: ' + file.relative)
     return `/* Created at ${new Date().toLocaleTimeString()} */` + content
   }
 }

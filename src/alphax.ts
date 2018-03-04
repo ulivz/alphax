@@ -6,9 +6,9 @@ import ware from 'ware'
 import dest from './dest'
 import { isArray, isFunction, isPromise } from "./utils"
 
-type Middleware = (ctx: File) => any
+type Middleware = (file: File) => any
 type Glob = string[] | string
-type TransformFn = (contents: string) => Promise<string> | string
+type TransformFn = (contents: string, file: File) => Promise<string> | string
 
 interface RenameConfig {
   [oldname: string]: string
@@ -130,7 +130,7 @@ export class AlphaX extends EventEmitter {
       let transformRes: Promise | string;
       if (isFunction(this.transformFn)) {
         try {
-          transformRes = this.transformFn(contents)
+          transformRes = this.transformFn(contents, file)
           if (isPromise(transformRes)) {
             transformRes = await transformRes
           }

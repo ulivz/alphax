@@ -76,10 +76,10 @@ const app = alphax()
 
 ##### options.transformFn
 
-- Type: `(contents: string) => Promise<string> | string`
+- Type: `(contents: string, file: File) => Promise<string> | string`
 - Required: `false`
 
-  A transform function, the first parameter is each file's contents, the returned string will be the new contents of the file.
+  A transform function, the first parameter is each file's contents, and each file's [vinyl file](https://github.com/gulpjs/vinyl) object will be passed as the second parameter, the returned string will be the new contents of the file.
 
 ##### options.baseDir
 
