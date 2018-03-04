@@ -1,3 +1,13 @@
+<a name="0.0.8"></a>
+## [0.0.8](https://github.com/ULIVZ/alphaX/compare/v0.0.7...v0.0.8) (2018-03-04)
+
+
+### Features
+
+* passed every file's vinyl object as the 2nd parameters to the tranformFn function ([866a785](https://github.com/ULIVZ/alphaX/commit/866a785))
+
+
+
 <a name="0.0.7"></a>
 ## [0.0.7](https://github.com/ULIVZ/alphaX/compare/v0.0.5...v0.0.7) (2018-03-04)
 
