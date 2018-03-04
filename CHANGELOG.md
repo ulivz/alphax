@@ -1,3 +1,8 @@
+<a name="0.0.7"></a>
+## [0.0.7](https://github.com/ULIVZ/alphaX/compare/v0.0.5...v0.0.7) (2018-03-04)
+
+
+
 <a name="0.0.5"></a>
 ## [0.0.5](https://github.com/ULIVZ/alphaX/compare/v0.0.4...v0.0.5) (2018-03-04)
 
