@@ -1,14 +1,23 @@
 import path from 'path'
-import fs from 'fs-extra'
-import * as File from 'vinyl'
 import { EventEmitter } from 'events'
+import fs from 'fs-extra'
 import ware from 'ware'
-import dest from './dest'
-import { isArray, isFunction, isPromise } from "./utils"
+import * as File from 'vinyl'
+import * as vinyl from 'vinyl-fs'
+import ReadWriteStream = NodeJS.ReadWriteStream;
+import WritableStream = NodeJS.WritableStream;
+import { isArray, isFunction, isPromise, curryFileTransformer } from "./utils"
+import * as es from 'event-stream'
 
 type Middleware = (file: File) => any
 type Glob = string[] | string
 type TransformFn = (contents: string, file: File) => Promise<string> | string
+type Task = (app: typeof AlphaX) => Promise<void> | void
+type Filter = (file: File) => boolean
+
+interface Files {
+  [relative: string]: File
+}
 
 interface RenameConfig {
   [oldname: string]: string
@@ -20,13 +29,17 @@ interface filterConfig {
 
 export class AlphaX extends EventEmitter {
   private middlewares: Middleware[]
+  private tasks: Task[]
   private patterns: string[]
   private renameConfig: RenameConfig
   private filterConfig: filterConfig
   private dotFiles: boolean
+  private options: vinyl.SrcOptions
   public meta: any
   public baseDir: string
   public transformFn: TransformFn
+  public files: Files
+  public filters: Array<Filter>
 
   constructor() {
     super()
@@ -39,14 +52,23 @@ export class AlphaX extends EventEmitter {
     filter = {},
     transformFn,
     dotFiles = true,
-    baseDir = '.'
+    baseDir = '.',
+    options = ''
   } = {}) {
     this.baseDir = baseDir
     this.patterns = isArray(patterns) ? patterns : [patterns]
+    this.options = options
     this.dotFiles = dotFiles
     this.renameConfig = rename
     this.filterConfig = filter
     this.transformFn = transformFn
+    this.files = {}
+    this.filters = []
+    return this
+  }
+
+  public task(task: Task) {
+    this.tasks.push(task)
     return this
   }
 
@@ -55,7 +77,17 @@ export class AlphaX extends EventEmitter {
     return this
   }
 
+  public filter(fn) {
+    this.filters.push(fn)
+    return this
+  }
+
+  public fileContent(relative: string) {
+    return (this.files[relative].contents as Buffer).toString()
+  }
+
   public async dest(destPath: string, {
+    write = true,
     clean = false
   } = {}) {
     if (!destPath) {
@@ -96,18 +128,66 @@ export class AlphaX extends EventEmitter {
       })
     }
 
-    const stream = dest(
-      this.patterns,
-      destPath,
-      {
-        allowEmpty: true,
-        transformer: this.transformer.bind(this)
+    const stream: ReadWriteStream = vinyl.src(this.patterns, {
+      allowEmpty: true
+    })
+
+    const transform = curryFileTransformer((file: File) => {
+      console.log('transform: ' + file.relative)
+      return this.transformer(file)
+    })
+
+    const collect = curryFileTransformer((file: File) => {
+      console.log('collect: ' + file.relative)
+
+      const { relative } = file
+      // Filter root file.
+      if (relative) {
+        this.files[relative] = file
       }
-    )
+    })
+
+    const filter = curryFileTransformer((file: File) => {
+      console.log('filter: ' + file.relative)
+
+      const filtered = this.filters.some(_filter => !_filter(file))
+      if (filtered) {
+        return null
+      }
+    })
+
+    let stream2
+    let _resolve, _reject
+    let filterStream = es.map(filter)
+    let transformStream = es.map(transform)
+    let collectStream = es.map(collect)
+
+    collectStream
+      .on('end', () => {
+        _resolve(this.files)
+      })
+      .on('error', (error) => {
+        _reject(error)
+      })
+
+    if (write) {
+      let destStream = vinyl.dest(destPath)
+      stream2 = stream
+        .pipe(filterStream)
+        .pipe(transformStream)
+        .pipe(destStream)
+        .pipe(collectStream)
+
+    } else {
+      stream2 = stream
+        .pipe(filterStream)
+        .pipe(transformStream)
+        .pipe(collectStream)
+    }
 
     return new Promise((resolve, reject) => {
-      stream.on('end', resolve)
-      stream.on('error', reject)
+      _resolve = resolve
+      _reject = reject
     })
   }
 

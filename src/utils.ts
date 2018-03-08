@@ -51,3 +51,26 @@ export const isIterable = x => !isNullOrUndefined(x) && isFunction(x[Symbol.iter
 export const isGenerator = x => isIterable(x) && isFunction(x.next) && isFunction(x.throw)
 
 export const isRegExp = isObjectOfType('RegExp')
+
+export function curryFileTransformer(fn) {
+  return function (file: File, cb) {
+    const res = fn(file)
+    if (isPromise(res)) {
+      res.then(asyncRes => {
+        if (asyncRes === null) {
+          cb()
+        } else {
+          cb(null, file)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    } else {
+      if (res === null) {
+        cb()
+      } else {
+        cb(null, file)
+      }
+    }
+  }
+}

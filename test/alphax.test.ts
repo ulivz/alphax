@@ -19,6 +19,15 @@ const config = {
 
 describe('alphax', () => {
 
+  test('new-test', async () => {
+    const app = alphaX()
+    const DIST_DIR = getDistDir('alphax-base')
+    await app
+      .src(SRC_DIR + '/**', Object.assign({ baseDir: SRC_DIR }, config))
+      .dest(DIST_DIR)
+    expect(app.fileContent('A/b.ts')).toMatchSnapshot()
+  })
+
   test('base', async () => {
     const DIST_DIR = getDistDir('alphax-base')
     const app = alphaX()
