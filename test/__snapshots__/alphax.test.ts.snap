@@ -1,15 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`alphax base 1`] = `
-Array [
-  "A",
-  "A/b.ts",
-]
+Object {
+  "A": null,
+  "A/b.ts": "A/b.ts: b.js
+",
+}
 `;
 
 exports[`alphax cwd 1`] = `
-Array [
-  "A",
-  "A/b.ts",
-]
+Object {
+  "A": null,
+  "A/b.ts": "A/b.ts: b.js
+",
+}
 `;

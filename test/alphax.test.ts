@@ -1,55 +1,53 @@
+import path from 'path'
 import alphaX from '../src/alphax'
-import { SRC_DIR, getDistDir, globDir } from './utils'
-
-const config = {
-  filter: {
-    'a': true,
-    'a/b/**': false,
-    'd.js': false
-  },
-  rename: {
-    'a': 'A',
-    '.js': '.ts'
-  },
-  transformFn(content, file) {
-    console.log('Transform file: ' + file.relative)
-    return `/* Created at ${new Date().toLocaleTimeString()} */` + content
-  }
-}
 
 describe('alphax', () => {
-
-  test('new-test', async () => {
-    const app = alphaX()
-    const DIST_DIR = getDistDir('alphax-base')
-    await app
-      .src(SRC_DIR + '/**', Object.assign({ baseDir: SRC_DIR }, config))
-      .dest(DIST_DIR)
-    expect(app.fileContent('A/b.ts')).toMatchSnapshot()
-  })
-
   test('base', async () => {
-    const DIST_DIR = getDistDir('alphax-base')
     const app = alphaX()
     await app
-      .src(SRC_DIR + '/**', Object.assign({ baseDir: SRC_DIR }, config))
-      .dest(DIST_DIR)
-    const files = await globDir(DIST_DIR, { baseDir: DIST_DIR })
-    expect(files).toMatchSnapshot()
+      .src(path.join(__dirname, '/fixtures/src/**'), {
+        baseDir: path.join(__dirname, '/fixtures/src'),
+        filter: {
+          'a': true,
+          'a/b/**': false,
+          'd.js': false
+        },
+        rename: {
+          'a': 'A',
+          '.js': '.ts'
+        },
+        transformFn(content, file) {
+          return file.relative + ': ' + content
+        }
+      })
+      .dest(null)
+    expect(app.fileMap()).toMatchSnapshot()
   })
 
   test('cwd', async () => {
-    const DIST_DIR = 'dist/alphax-cwd'
     const app = alphaX()
-
-    let prevCwd = process.cwd()
+    const prevCwd = process.cwd()
     process.chdir('test/fixtures')
 
     await app
-      .src('src/**', Object.assign({ baseDir: 'src' }, config))
-      .dest(DIST_DIR)
-    const files = await globDir(DIST_DIR, { baseDir: DIST_DIR })
-    expect(files).toMatchSnapshot()
+      .src('**', {
+        baseDir: path.resolve('src'),
+        filter: {
+          'a': true,
+          'a/b/**': false,
+          'd.js': false
+        },
+        rename: {
+          'a': 'A',
+          '.js': '.ts'
+        },
+        transformFn(content, file) {
+          return file.relative + ': ' + content
+        }
+      })
+      .dest(null)
+
+    expect(app.fileMap()).toMatchSnapshot()
     process.chdir(prevCwd)
   })
 

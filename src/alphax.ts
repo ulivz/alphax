@@ -1,12 +1,11 @@
 import path from 'path'
 import { EventEmitter } from 'events'
-import fs from 'fs-extra'
 import ware from 'ware'
 import * as File from 'vinyl'
 import * as vinyl from 'vinyl-fs'
 import ReadWriteStream = NodeJS.ReadWriteStream;
 import WritableStream = NodeJS.WritableStream;
-import { isArray, isFunction, isPromise, curryFileTransformer } from "./utils"
+import { isArray, isFunction, isPromise, curryFileTransformer, isBuffer } from "./utils"
 import * as es from 'event-stream'
 
 type Middleware = (file: File) => any
@@ -83,20 +82,34 @@ export class AlphaX extends EventEmitter {
   }
 
   public fileContent(relative: string) {
-    return (this.files[relative].contents as Buffer).toString()
+    if (isBuffer(this.files[relative].contents)) {
+      return (this.files[relative].contents as Buffer).toString()
+    }
+    return null
+  }
+
+  public fileMap() {
+    const fileOb = {}
+    Object.keys(this.files).forEach(relative => fileOb[relative] = this.fileContent(relative))
+    return fileOb
+  }
+
+  public fileList() {
+    const list: string[] = []
+    Object.keys(this.files).forEach(file => list.push(file))
+    return list
   }
 
   public async dest(destPath: string, {
-    write = true,
-    clean = false
+    write = true
   } = {}) {
-    if (!destPath) {
-      throw new Error('dest path is required')
-    }
-    // destPath = path.resolve(this.base, destPath)
 
-    if (clean) {
-      await fs.remove(destPath)
+    if (!destPath) {
+      write = false
+    }
+
+    if (write && !destPath) {
+      throw new Error('Expect dest path when writeable')
     }
 
     // Add rename middleware.
@@ -129,17 +142,15 @@ export class AlphaX extends EventEmitter {
     }
 
     const stream: ReadWriteStream = vinyl.src(this.patterns, {
-      allowEmpty: true
+      allowEmpty: true,
+      cwd: this.baseDir
     })
 
     const transform = curryFileTransformer((file: File) => {
-      console.log('transform: ' + file.relative)
       return this.transformer(file)
     })
 
     const collect = curryFileTransformer((file: File) => {
-      console.log('collect: ' + file.relative)
-
       const { relative } = file
       // Filter root file.
       if (relative) {
@@ -148,46 +159,35 @@ export class AlphaX extends EventEmitter {
     })
 
     const filter = curryFileTransformer((file: File) => {
-      console.log('filter: ' + file.relative)
-
       const filtered = this.filters.some(_filter => !_filter(file))
       if (filtered) {
         return null
       }
     })
 
-    let stream2
-    let _resolve, _reject
     let filterStream = es.map(filter)
     let transformStream = es.map(transform)
     let collectStream = es.map(collect)
 
-    collectStream
-      .on('end', () => {
-        _resolve(this.files)
-      })
-      .on('error', (error) => {
-        _reject(error)
-      })
-
     if (write) {
-      let destStream = vinyl.dest(destPath)
-      stream2 = stream
+      let destStream = vinyl.dest(destPath, { cwd: this.baseDir || process.cwd() })
+      stream
         .pipe(filterStream)
         .pipe(transformStream)
         .pipe(destStream)
         .pipe(collectStream)
 
     } else {
-      stream2 = stream
+      stream
         .pipe(filterStream)
         .pipe(transformStream)
         .pipe(collectStream)
     }
 
     return new Promise((resolve, reject) => {
-      _resolve = resolve
-      _reject = reject
+      collectStream
+        .on('end', () => resolve(this.files))
+        .on('error', reject)
     })
   }
 
@@ -201,7 +201,7 @@ export class AlphaX extends EventEmitter {
         })
       })
     } catch (error) {
-      console.log(error)
+      this.emit('middleware-error', error)
     }
 
     // 2. transform
@@ -215,7 +215,7 @@ export class AlphaX extends EventEmitter {
             transformRes = await transformRes
           }
         } catch (err) {
-          console.error('Failed to transform file: ' + file.relative)
+          this.emit('transform-error', err, file)
         }
       }
       file.contents = Buffer.from(transformRes || contents)
