@@ -2,16 +2,28 @@
 
 exports[`alphax base 1`] = `
 Object {
-  "A": null,
-  "A/b.ts": "A/b.ts: b.js
+  "index.ts": " ==== source name is index.js
+",
+  "lib2": null,
+  "lib2/core": null,
+  "lib2/core/core.ts": " ==== source name is core.js
+",
+  "lib2/lib.ts": " ==== source name is lib.js
 ",
 }
 `;
 
 exports[`alphax cwd 1`] = `
 Object {
-  "A": null,
-  "A/b.ts": "A/b.ts: b.js
+  "index.ts": " ==== source name is index.js
+",
+  "lib2": null,
+  "lib2/core": null,
+  "lib2/core/core.ts": " ==== source name is core.js
+",
+  "lib2/lib.ts": " ==== source name is lib.js
 ",
 }
 `;
+
+exports[`alphax filter function 1`] = `Object {}`;
