@@ -1,52 +1,97 @@
 import path from 'path'
-import fs from 'fs-extra'
-import * as File from 'vinyl'
 import { EventEmitter } from 'events'
 import ware from 'ware'
-import dest from './dest'
-import { isArray, isFunction, isPromise } from "./utils"
+import * as es from 'event-stream'
+import * as File from 'vinyl'
+import { src, dest, SrcOptions } from 'vinyl-fs'
+import { isArray, isFunction, isPromise, curryFileTransformer, isBuffer, getRenamerByConfig } from './utils'
+import { getRenameMiddleware } from './middlewares'
 
-type Middleware = (file: File) => any
-type Glob = string[] | string
-type TransformFn = (contents: string, file: File) => Promise<string> | string
+export type Middleware = (file: File) => any
+export type Glob = string[] | string
+export type TransformFn = (contents: string, file: File) => Promise<string> | string
+export type Task = (app: typeof AlphaX) => Promise<void> | void
 
-interface RenameConfig {
+/**
+ * A Filter that accepts the vinyl file instance,
+ * return false will exclude the file.
+ */
+export type Filter = (file: File) => boolean
+
+/**
+ * A Renamer that accepts an old path (It's actually a relative path),
+ * and returns the value as a new path
+ */
+export type Renamer = (filepath: string) => string
+
+export interface Files {
+  [relative: string]: File
+}
+
+export interface RenameConfig {
   [oldname: string]: string
 }
 
-interface filterConfig {
+export interface filtersConfig {
   [pattern: string]: boolean
+}
+
+export interface Changelog {
+  [relative: string]: string[]
+}
+
+export interface AlphaXSrcOptions extends SrcOptions {
+  baseDir?: string;
+  rename?: RenameConfig;
+  filters?: filtersConfig;
+  transformFn?: TransformFn;
 }
 
 export class AlphaX extends EventEmitter {
   private middlewares: Middleware[]
+  private tasks: Task[]
   private patterns: string[]
   private renameConfig: RenameConfig
-  private filterConfig: filterConfig
-  private dotFiles: boolean
+  private filtersConfig: filtersConfig
+  private options: SrcOptions
+  private filters: Array<Filter>
+  private renamers: Array<Renamer>
+  private renameChangelog: Changelog
   public meta: any
   public baseDir: string
   public transformFn: TransformFn
+  public files: Files
 
   constructor() {
     super()
     this.middlewares = []
     this.meta = {}
+    this.files = {}
+    this.filters = []
+    this.tasks = []
+    this.renamers = []
+    this.renameChangelog = {}
   }
 
   public src(patterns: Glob, {
+    baseDir = '.',
     rename = {},
-    filter = {},
+    filters = {},
     transformFn,
-    dotFiles = true,
-    baseDir = '.'
-  } = {}) {
+    ...options
+  }: AlphaXSrcOptions = {}) {
     this.baseDir = baseDir
     this.patterns = isArray(patterns) ? patterns : [patterns]
-    this.dotFiles = dotFiles
     this.renameConfig = rename
-    this.filterConfig = filter
+    this.filtersConfig = filters
     this.transformFn = transformFn
+    this.options = options
+    options.cwd = options.cwd || baseDir
+    return this
+  }
+
+  public task(task: Task) {
+    this.tasks.push(task)
     return this
   }
 
@@ -55,73 +100,130 @@ export class AlphaX extends EventEmitter {
     return this
   }
 
+  public filter(filter: Filter) {
+    this.filters.push(filter)
+    return this
+  }
+
+  public rename(renamer: Renamer) {
+    this.renamers.push(renamer)
+    return this
+  }
+
+  public transformFn(transformFn: TransformFn) {
+    this.transformFn = transformFn
+    return this
+  }
+
   public async dest(destPath: string, {
-    clean = false
+    write = true,
+    ...options
   } = {}) {
-    if (!destPath) {
-      throw new Error('dest path is required')
-    }
-    // destPath = path.resolve(this.base, destPath)
 
-    if (clean) {
-      await fs.remove(destPath)
-    }
-
-    // Add rename middleware.
-    if (this.renameConfig) {
-      const getNewName = (name: string): string => {
-        Object.keys(this.renameConfig).forEach(pattern => {
-          name = name.replace(pattern, this.renameConfig[pattern])
+    try {
+      await new Promise((resolve) => {
+        ware().use(this.tasks).run(this, (err: Error) => {
+          if (err) {
+            console.log(err)
+          } else {
+            resolve()
+          }
         })
-        return name
-      }
-      this.use((file) => {
-        let oldRelative = file.relative
-        let newName = path.join(file.base, getNewName(file.relative))
-        if (file.path !== newName) {
-          file.path = newName
-          this.emit('rename', {
-            oldname: oldRelative,
-            newname: file.relative
-          })
-        }
       })
+    } catch (error) {
+      this.emit('middleware-error', error)
     }
 
-    if (this.filterConfig) {
-      Object.keys(this.filterConfig).forEach(fileName => {
-        if (!this.filterConfig[fileName]) {
+    if (!destPath) {
+      write = false
+    }
+
+    if (write && !destPath) {
+      throw new Error(
+        'Expect first parameter to be dest path when writeable.'
+      )
+    }
+
+    // If there is rename config, convert it to a renamer function
+    if (this.renameConfig) {
+      this.renamers.push(getRenamerByConfig(this.renameConfig))
+    }
+    // Use rename middleware
+    this.use(getRenameMiddleware(this.renamers, this.renameChangelog))
+
+    if (this.filtersConfig) {
+      Object.keys(this.filtersConfig).forEach(fileName => {
+        if (!this.filtersConfig[fileName]) {
           this.patterns.push('!' + path.join(this.baseDir, fileName))
         }
       })
     }
 
-    const stream = dest(
-      this.patterns,
-      destPath,
-      {
-        allowEmpty: true,
-        transformer: this.transformer.bind(this)
+    const stream: NodeJS.ReadWriteStream = src(this.patterns, this.options)
+
+    const transform = curryFileTransformer((file: File) => this.transformFile(file))
+
+    const filter = curryFileTransformer((file: File) =>
+      this.filters.some(_filter => !_filter(file)) ? null : true)
+
+    const collect = curryFileTransformer((file: File) => {
+      const { relative } = file
+      if (relative) { // Filter root file.
+        this.files[relative] = file
       }
-    )
+    })
+
+    const filterStream = es.map(filter)
+    const transformStream = es.map(transform)
+    const collectStream = es.map(collect)
+
+    if (write) {
+      let destStream = dest(destPath, options || {})
+      stream.pipe(filterStream).pipe(transformStream).pipe(destStream).pipe(collectStream)
+    } else {
+      stream.pipe(filterStream).pipe(transformStream).pipe(collectStream)
+    }
 
     return new Promise((resolve, reject) => {
-      stream.on('end', resolve)
-      stream.on('error', reject)
+      collectStream
+        .on('end', () => resolve(this.files))
+        .on('error', reject)
     })
   }
 
-  private async transformer(file: File) {
+  public fileContent(relative: string) {
+    if (isBuffer(this.files[relative].contents)) {
+      return (this.files[relative].contents as Buffer).toString()
+    }
+    return null
+  }
+
+  public fileMap() {
+    const fileOb = {}
+    Object.keys(this.files).forEach(relative => fileOb[relative] = this.fileContent(relative))
+    return fileOb
+  }
+
+  public fileList() {
+    const list: string[] = []
+    Object.keys(this.files).forEach(file => list.push(file))
+    return list
+  }
+
+  private async transformFile(file: File) {
     // 1. middleware
     try {
-      await new Promise((resolve, reject) => {
+      await new Promise((resolve) => {
         ware().use(this.middlewares).run(file, (err: Error) => {
-          if (err) return reject(err)
-          resolve()
+          if (err) {
+            console.log(err)
+          } else {
+            resolve()
+          }
         })
       })
     } catch (error) {
-      console.log(error)
+      this.emit('middleware-error', error)
     }
 
     // 2. transform
@@ -135,7 +237,7 @@ export class AlphaX extends EventEmitter {
             transformRes = await transformRes
           }
         } catch (err) {
-          console.error('Failed to transform file: ' + file.relative)
+          this.emit('transform-error', err, file)
         }
       }
       file.contents = Buffer.from(transformRes || contents)

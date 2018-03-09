@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "inquirer": "^3.0.6",
+    "alphax": "^0.0.8",
+    "pupa": "^1.0.0"
+  }
+}

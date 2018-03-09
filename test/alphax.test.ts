@@ -1,47 +1,123 @@
+import path from 'path'
 import alphaX from '../src/alphax'
-import { SRC_DIR, getDistDir, globDir } from './utils'
-
-const config = {
-  filter: {
-    'a': true,
-    'a/b/**': false,
-    'd.js': false
-  },
-  rename: {
-    'a': 'A',
-    '.js': '.ts'
-  },
-  transformFn(content, file) {
-    console.log('Transform file: ' + file.relative)
-    return `/* Created at ${new Date().toLocaleTimeString()} */` + content
-  }
-}
 
 describe('alphax', () => {
-
   test('base', async () => {
-    const DIST_DIR = getDistDir('alphax-base')
     const app = alphaX()
     await app
-      .src(SRC_DIR + '/**', Object.assign({ baseDir: SRC_DIR }, config))
-      .dest(DIST_DIR)
-    const files = await globDir(DIST_DIR, { baseDir: DIST_DIR })
-    expect(files).toMatchSnapshot()
+      .src(path.join(__dirname, '/fixtures/package/**'), {
+        baseDir: path.join(__dirname, '/fixtures/package'),
+        filters: {
+          'lib': true,
+          'lib/util/**': false,
+          'style/**': false,
+          'index.js': true
+        },
+        rename: {
+          'lib': 'lib2',
+          '.js': '.ts'
+        },
+        transformFn(content, file) {
+          return ' ==== source name is ' + content
+        }
+      })
+      .dest(null)
+    expect(app.fileMap()).toMatchSnapshot()
   })
 
   test('cwd', async () => {
-    const DIST_DIR = 'dist/alphax-cwd'
     const app = alphaX()
-
-    let prevCwd = process.cwd()
+    const prevCwd = process.cwd()
     process.chdir('test/fixtures')
 
     await app
-      .src('src/**', Object.assign({ baseDir: 'src' }, config))
-      .dest(DIST_DIR)
-    const files = await globDir(DIST_DIR, { baseDir: DIST_DIR })
-    expect(files).toMatchSnapshot()
+      .src('**', {
+        baseDir: path.resolve('package'),
+        filters: {
+          'lib': true,
+          'lib/util/**': false,
+          'style/**': false,
+          'index.js': true
+        },
+        rename: {
+          'lib': 'lib2',
+          '.js': '.ts'
+        },
+        transformFn(content, file) {
+          return ' ==== source name is ' + content
+        }
+      })
+      .dest(null)
+
+    console.log(app.renameChangelog)
+    expect(app.fileMap()).toMatchSnapshot()
     process.chdir(prevCwd)
   })
+
+  test('filter function - 1', async () => {
+    const app = alphaX()
+    const prevCwd = process.cwd()
+    process.chdir('test/fixtures')
+
+    await app
+      .src('**', {
+        baseDir: path.resolve('package'),
+        transformFn(content, file) {
+          return file.relative + ': ' + content
+        }
+      })
+      .filter(file => file.relative.indexOf('style') === -1)
+      .dest(null)
+
+    expect(app.fileMap()).toMatchSnapshot()
+    process.chdir(prevCwd)
+  })
+
+  test('filter function - 2', async () => {
+    const app = alphaX()
+    const prevCwd = process.cwd()
+    process.chdir('test/fixtures')
+
+    await app
+      .src('**', {
+        baseDir: path.resolve('package'),
+        transformFn(content, file) {
+          return file.relative + ': ' + content
+        }
+      })
+      .filter(file => file.relative.indexOf('style') > -1)
+      .dest(null)
+
+    expect(app.fileMap()).toMatchSnapshot()
+    process.chdir(prevCwd)
+  })
+
+  test('rename function', async () => {
+    const app = alphaX()
+    const prevCwd = process.cwd()
+    process.chdir('test/fixtures')
+
+    await app
+      .src('**', {
+        baseDir: path.resolve('package'),
+        transformFn(content, file) {
+          return file.relative + ': ' + content
+        }
+      })
+      .rename(filepath => {
+        if (filepath === 'index.js') {
+          return 'main.js'
+        }
+        if (filepath.indexOf('util') > -1) {
+          return filepath.replace('util', 'utils')
+        }
+        return filepath
+      })
+      .dest(null)
+
+    expect(app.fileMap()).toMatchSnapshot()
+    process.chdir(prevCwd)
+  })
+
 
 })
