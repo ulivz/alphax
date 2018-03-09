@@ -1,7 +1,7 @@
 {
   "name": "alphax",
-  "version": "0.1.0",
-  "description": "my beautiful project",
+  "version": "0.1.2",
+  "description": "Atom for a scaffolding",
   "repository": {
     "url": "ULIVZ/alphaX",
     "type": "git"
@@ -38,7 +38,8 @@
   "bili": {
     "input": "src/index.ts",
     "js": "typescript",
-    "filename": "alphax.js"
+    "filename": "alphax.js",
+    "banner": true
   },
   "babel": {
     "env": {
