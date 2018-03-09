@@ -11,6 +11,11 @@ export type Middleware = (file: File) => any
 export type Glob = string[] | string
 export type TransformFn = (contents: string, file: File) => Promise<string> | string
 export type Task = (app: typeof AlphaX) => Promise<void> | void
+
+/**
+ * A Filter that accepts the vinyl file instance,
+ * return false will exclude the file.
+ */
 export type Filter = (file: File) => boolean
 
 /**
@@ -105,10 +110,29 @@ export class AlphaX extends EventEmitter {
     return this
   }
 
+  public transformFn(transformFn: TransformFn) {
+    this.transformFn = transformFn
+    return this
+  }
+
   public async dest(destPath: string, {
     write = true,
     ...options
   } = {}) {
+
+    try {
+      await new Promise((resolve) => {
+        ware().use(this.tasks).run(this, (err: Error) => {
+          if (err) {
+            console.log(err)
+          } else {
+            resolve()
+          }
+        })
+      })
+    } catch (error) {
+      this.emit('middleware-error', error)
+    }
 
     if (!destPath) {
       write = false

@@ -8,7 +8,7 @@ Object {
   "lib2/core": null,
   "lib2/core/core.ts": " ==== source name is core.js
 ",
-  "lib2/lib.ts": " ==== source name is lib.js
+  "lib2/lib2.ts": " ==== source name is lib.js
 ",
 }
 `;
@@ -21,7 +21,7 @@ Object {
   "lib2/core": null,
   "lib2/core/core.ts": " ==== source name is core.js
 ",
-  "lib2/lib.ts": " ==== source name is lib.js
+  "lib2/lib2.ts": " ==== source name is lib.js
 ",
 }
 `;
@@ -44,6 +44,25 @@ Object {
 
 exports[`alphax filter function - 2 1`] = `
 Object {
+  "style": null,
+  "style/index.css": "style/index.css: index.css
+",
+}
+`;
+
+exports[`alphax rename function 1`] = `
+Object {
+  "lib": null,
+  "lib/core": null,
+  "lib/core/core.js": "lib/core/core.js: core.js
+",
+  "lib/lib.js": "lib/lib.js: lib.js
+",
+  "lib/utils": null,
+  "lib/utils/util.js": "lib/utils/util.js: util.js
+",
+  "main.js": "main.js: index.js
+",
   "style": null,
   "style/index.css": "style/index.css: index.css
 ",

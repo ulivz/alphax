@@ -7,10 +7,11 @@ const app = alphax()
 
 app
   .src('**', { baseDir: path.resolve('template') })
-  .use(prompt)
-  .use(template)
+  .task(prompt)
+  .transformFn(template)
   .filter(filepath => {
-    if (filepath === 'test.js' && !stream.meta.test) {
+    const { test } = app.meta
+    if (!test && filepath === 'test.js') {
       return false
     }
     return true
@@ -24,7 +25,7 @@ app
     process.exit(1)
   })
 
-function prompt(stream) {
+function prompt(app) {
   return ask.prompt([{
     name: 'name',
     message: `what's your project's name:`,
@@ -34,16 +35,10 @@ function prompt(stream) {
     message: 'Do you want unit test:',
     type: 'confirm'
   }]).then(answers => {
-    stream.meta = answers
+    app.meta = answers
   })
 }
 
-function template(stream) {
-  for (const relative in stream.files) {
-    const contents = stream.fileContents(relative)
-    // Only does interpolation when `{}` appears
-    if (/\{.+\}/.test(contents)) {
-      stream.writeContents(relative, pupa(contents, stream.meta))
-    }
-  }
+function template(content) {
+  return pupa(content, app.meta)
 }

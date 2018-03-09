@@ -92,4 +92,32 @@ describe('alphax', () => {
     process.chdir(prevCwd)
   })
 
+  test('rename function', async () => {
+    const app = alphaX()
+    const prevCwd = process.cwd()
+    process.chdir('test/fixtures')
+
+    await app
+      .src('**', {
+        baseDir: path.resolve('package'),
+        transformFn(content, file) {
+          return file.relative + ': ' + content
+        }
+      })
+      .rename(filepath => {
+        if (filepath === 'index.js') {
+          return 'main.js'
+        }
+        if (filepath.indexOf('util') > -1) {
+          return filepath.replace('util', 'utils')
+        }
+        return filepath
+      })
+      .dest(null)
+
+    expect(app.fileMap()).toMatchSnapshot()
+    process.chdir(prevCwd)
+  })
+
+
 })
