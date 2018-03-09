@@ -4,8 +4,9 @@ import { Renamer, Changelog } from './alphax'
 
 export function getRenameMiddleware(renamers: Renamer[], changelog: Changelog) {
   return function (file: File) {
-    changelog[file.relative] = []
-    changelog[file.relative].push(file.relative)
+    const originalName = file.relative
+    changelog[originalName] = []
+    changelog[originalName].push(originalName)
     renamers.forEach(renamer => {
       let newName
       try {
@@ -15,7 +16,7 @@ export function getRenameMiddleware(renamers: Renamer[], changelog: Changelog) {
       }
       if (newName) {
         file.path = path.join(file.base, newName)
-        changelog[file.relative].push(file.relative)
+        changelog[originalName].push(file.relative)
       }
     })
   }

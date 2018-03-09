@@ -2,7 +2,7 @@
  * data types check util
  * Modified from https://github.com/sindresorhus/is/blob/master/index.js
  */
-import path from 'path'
+import * as File from 'vinyl'
 import { RenameConfig } from './alphax'
 
 const toString = Object.prototype.toString
@@ -79,7 +79,6 @@ export function curryFileTransformer(fn) {
 
 export function getRenamerByConfig(renameConfig: RenameConfig): (filepath: string) => string {
   return function (filepath: string) {
-    console.log('filepath: ' + filepath + ' ' + typeof filepath)
     Object.keys(renameConfig).forEach(pattern => {
       filepath = filepath.replace(pattern, renameConfig[pattern])
     })

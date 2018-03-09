@@ -153,14 +153,12 @@ export class AlphaX extends EventEmitter {
     const transformStream = es.map(transform)
     const collectStream = es.map(collect)
 
-    stream.pipe(filterStream).pipe(transformStream)
-
     if (write) {
       let destStream = dest(destPath, options || {})
-      stream.pipe(destStream)
+      stream.pipe(filterStream).pipe(transformStream).pipe(destStream).pipe(collectStream)
+    } else {
+      stream.pipe(filterStream).pipe(transformStream).pipe(collectStream)
     }
-
-    stream.pipe(collectStream)
 
     return new Promise((resolve, reject) => {
       collectStream
