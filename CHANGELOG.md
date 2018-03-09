@@ -1,3 +1,18 @@
+<a name="0.1.3"></a>
+## [0.1.3](https://github.com/ULIVZ/alphaX/compare/v0.0.8...v0.1.3) (2018-03-09)
+
+
+### Bug Fixes
+
+* fix some bugs ([56063c9](https://github.com/ULIVZ/alphaX/commit/56063c9))
+
+
+### Features
+
+* init ([462b997](https://github.com/ULIVZ/alphaX/commit/462b997))
+
+
+
 <a name="0.1.0"></a>
 # [0.1.0](https://github.com/ULIVZ/alphaX/compare/v0.0.8...v0.1.0) (2018-03-09)
 
