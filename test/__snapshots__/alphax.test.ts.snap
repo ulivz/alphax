@@ -26,4 +26,26 @@ Object {
 }
 `;
 
-exports[`alphax filter function 1`] = `Object {}`;
+exports[`alphax filter function - 1 1`] = `
+Object {
+  "index.js": "index.js: index.js
+",
+  "lib": null,
+  "lib/core": null,
+  "lib/core/core.js": "lib/core/core.js: core.js
+",
+  "lib/lib.js": "lib/lib.js: lib.js
+",
+  "lib/util": null,
+  "lib/util/util.js": "lib/util/util.js: util.js
+",
+}
+`;
+
+exports[`alphax filter function - 2 1`] = `
+Object {
+  "style": null,
+  "style/index.css": "style/index.css: index.css
+",
+}
+`;

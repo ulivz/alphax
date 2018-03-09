@@ -53,25 +53,38 @@ describe('alphax', () => {
     process.chdir(prevCwd)
   })
 
-  test('filter function', async () => {
+  test('filter function - 1', async () => {
     const app = alphaX()
     const prevCwd = process.cwd()
     process.chdir('test/fixtures')
 
     await app
       .src('**', {
-        baseDir: path.resolve('src'),
+        baseDir: path.resolve('package'),
         transformFn(content, file) {
           return file.relative + ': ' + content
         }
       })
-      .filter(file => {
-        console.log(file.relative)
-        if (file.relative.indexOf('style') > -1) {
-          return false
+      .filter(file => file.relative.indexOf('style') === -1)
+      .dest(null)
+
+    expect(app.fileMap()).toMatchSnapshot()
+    process.chdir(prevCwd)
+  })
+
+  test('filter function - 2', async () => {
+    const app = alphaX()
+    const prevCwd = process.cwd()
+    process.chdir('test/fixtures')
+
+    await app
+      .src('**', {
+        baseDir: path.resolve('package'),
+        transformFn(content, file) {
+          return file.relative + ': ' + content
         }
-        return true
       })
+      .filter(file => file.relative.indexOf('style') > -1)
       .dest(null)
 
     expect(app.fileMap()).toMatchSnapshot()

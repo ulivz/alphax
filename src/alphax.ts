@@ -78,7 +78,6 @@ export class AlphaX extends EventEmitter {
 
   public filter(fn) {
     this.filters.push(fn)
-    console.log(this.filters)
     return this
   }
 
@@ -160,7 +159,6 @@ export class AlphaX extends EventEmitter {
     })
 
     const filter = curryFileTransformer((file: File) => {
-      console.log(this.filters)
       const filtered = this.filters.some(_filter => !_filter(file))
       if (filtered) {
         return null
