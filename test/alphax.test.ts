@@ -7,7 +7,7 @@ describe('alphax', () => {
     await app
       .src(path.join(__dirname, '/fixtures/package/**'), {
         baseDir: path.join(__dirname, '/fixtures/package'),
-        filter: {
+        filters: {
           'lib': true,
           'lib/util/**': false,
           'style/**': false,
@@ -33,7 +33,7 @@ describe('alphax', () => {
     await app
       .src('**', {
         baseDir: path.resolve('package'),
-        filter: {
+        filters: {
           'lib': true,
           'lib/util/**': false,
           'style/**': false,
@@ -49,6 +49,7 @@ describe('alphax', () => {
       })
       .dest(null)
 
+    console.log(app.renameChangelog)
     expect(app.fileMap()).toMatchSnapshot()
     process.chdir(prevCwd)
   })

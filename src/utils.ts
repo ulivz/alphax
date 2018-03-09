@@ -2,6 +2,8 @@
  * data types check util
  * Modified from https://github.com/sindresorhus/is/blob/master/index.js
  */
+import path from 'path'
+import { RenameConfig } from './alphax'
 
 const toString = Object.prototype.toString
 const getObjectType = x => toString.call(x).slice(8, -1)
@@ -72,5 +74,14 @@ export function curryFileTransformer(fn) {
         cb(null, file)
       }
     }
+  }
+}
+
+export function getRenamerByConfig(renameConfig: RenameConfig): (filepath: string) => string {
+  return function (filepath: string) {
+    Object.keys(renameConfig).forEach(pattern => {
+      filepath = filepath.replace(pattern, renameConfig[pattern])
+    })
+    return filepath
   }
 }

@@ -1,29 +1,45 @@
 import path from 'path'
 import { EventEmitter } from 'events'
 import ware from 'ware'
-import * as File from 'vinyl'
-import * as vinyl from 'vinyl-fs'
-import ReadWriteStream = NodeJS.ReadWriteStream;
-import WritableStream = NodeJS.WritableStream;
-import { isArray, isFunction, isPromise, curryFileTransformer, isBuffer } from "./utils"
 import * as es from 'event-stream'
+import * as File from 'vinyl'
+import { src, dest, SrcOptions } from 'vinyl-fs'
+import { isArray, isFunction, isPromise, curryFileTransformer, isBuffer, getRenamerByConfig } from './utils'
+import { getRenameMiddleware } from './middlewares'
 
-type Middleware = (file: File) => any
-type Glob = string[] | string
-type TransformFn = (contents: string, file: File) => Promise<string> | string
-type Task = (app: typeof AlphaX) => Promise<void> | void
-type Filter = (file: File) => boolean
+export type Middleware = (file: File) => any
+export type Glob = string[] | string
+export type TransformFn = (contents: string, file: File) => Promise<string> | string
+export type Task = (app: typeof AlphaX) => Promise<void> | void
+export type Filter = (file: File) => boolean
 
-interface Files {
+/**
+ * A Renamer that accepts an old path (It's actually a relative path),
+ * and returns the value as a new path
+ */
+export type Renamer = (filepath: string) => string
+
+export interface Files {
   [relative: string]: File
 }
 
-interface RenameConfig {
+export interface RenameConfig {
   [oldname: string]: string
 }
 
-interface filterConfig {
+export interface filtersConfig {
   [pattern: string]: boolean
+}
+
+export interface Changelog {
+  [relative:string]: string[]
+}
+
+export interface AlphaXSrcOptions extends SrcOptions {
+  baseDir?: string;
+  rename?: RenameConfig;
+  filters?: filtersConfig;
+  transformFn?: TransformFn;
 }
 
 export class AlphaX extends EventEmitter {
@@ -31,38 +47,41 @@ export class AlphaX extends EventEmitter {
   private tasks: Task[]
   private patterns: string[]
   private renameConfig: RenameConfig
-  private filterConfig: filterConfig
-  private dotFiles: boolean
-  private options: vinyl.SrcOptions
+  private filtersConfig: filtersConfig
+  private options: SrcOptions
+  private filters: Array<Filter>
+  private renamers: Array<Renamer>
+  private renameChangelog: Changelog
   public meta: any
   public baseDir: string
   public transformFn: TransformFn
   public files: Files
-  public filters: Array<Filter>
 
   constructor() {
     super()
     this.middlewares = []
     this.meta = {}
+    this.files = {}
+    this.filters = []
+    this.tasks = []
+    this.renamers = []
+    this.renameChangelog = {}
   }
 
   public src(patterns: Glob, {
-    rename = {},
-    filter = {},
-    transformFn,
-    dotFiles = true,
     baseDir = '.',
-    options = ''
-  } = {}) {
+    rename = {},
+    filters = {},
+    transformFn,
+    ...options
+  }: AlphaXSrcOptions = {}) {
     this.baseDir = baseDir
     this.patterns = isArray(patterns) ? patterns : [patterns]
-    this.options = options
-    this.dotFiles = dotFiles
     this.renameConfig = rename
-    this.filterConfig = filter
+    this.filtersConfig = filters
     this.transformFn = transformFn
-    this.files = {}
-    this.filters = []
+    this.options = options
+    options.cwd = options.cwd || baseDir
     return this
   }
 
@@ -76,9 +95,80 @@ export class AlphaX extends EventEmitter {
     return this
   }
 
-  public filter(fn) {
-    this.filters.push(fn)
+  public filter(filter: Filter) {
+    this.filters.push(filter)
     return this
+  }
+
+  public rename(renamer: Renamer) {
+    this.renamers.push(renamer)
+    return this
+  }
+
+  public async dest(destPath: string, {
+    write = true,
+    ...options
+  } = {}) {
+
+    if (!destPath) {
+      write = false
+    }
+
+    if (write && !destPath) {
+      throw new Error(
+        'Expect first parameter to be dest path when writeable.'
+      )
+    }
+
+    // If there is rename config, convert it to a renamer function
+    if (this.renameConfig) {
+      this.renamers.push(getRenamerByConfig(this.renameConfig))
+    }
+    // Use rename middleware
+    this.use(getRenameMiddleware(this.renamers, this.renameChangelog))
+
+    if (this.filtersConfig) {
+      Object.keys(this.filtersConfig).forEach(fileName => {
+        if (!this.filtersConfig[fileName]) {
+          this.patterns.push('!' + path.join(this.baseDir, fileName))
+        }
+      })
+    }
+
+    const stream: NodeJS.ReadWriteStream = src(this.patterns, this.options)
+
+    const transform = curryFileTransformer((file: File) => this.transformFile(file))
+
+    const filter = curryFileTransformer((file: File) =>
+      this.filters.some(_filter => !_filter(file)) ? null : true)
+
+    const collect = curryFileTransformer((file: File) => {
+      const { relative } = file
+      if (relative) { // Filter root file.
+        this.files[relative] = file
+      }
+    })
+
+    const filterStream = es.map(filter)
+    const transformStream = es.map(transform)
+    const collectStream = es.map(collect)
+
+    stream
+      .pipe(filterStream)
+      .pipe(transformStream)
+
+    if (write) {
+      let destStream = dest(destPath, options || {})
+      stream.pipe(destStream)
+    }
+
+    stream.pipe(collectStream)
+
+    return new Promise((resolve, reject) => {
+      collectStream
+        .on('end', () => resolve(this.files))
+        .on('error', reject)
+    })
   }
 
   public fileContent(relative: string) {
@@ -100,98 +190,7 @@ export class AlphaX extends EventEmitter {
     return list
   }
 
-  public async dest(destPath: string, {
-    write = true
-  } = {}) {
-
-    if (!destPath) {
-      write = false
-    }
-
-    if (write && !destPath) {
-      throw new Error('Expect dest path when writeable')
-    }
-
-    // Add rename middleware.
-    if (this.renameConfig) {
-      const getNewName = (name: string): string => {
-        Object.keys(this.renameConfig).forEach(pattern => {
-          name = name.replace(pattern, this.renameConfig[pattern])
-        })
-        return name
-      }
-      this.use((file) => {
-        let oldRelative = file.relative
-        let newName = path.join(file.base, getNewName(file.relative))
-        if (file.path !== newName) {
-          file.path = newName
-          this.emit('rename', {
-            oldname: oldRelative,
-            newname: file.relative
-          })
-        }
-      })
-    }
-
-    if (this.filterConfig) {
-      Object.keys(this.filterConfig).forEach(fileName => {
-        if (!this.filterConfig[fileName]) {
-          this.patterns.push('!' + path.join(this.baseDir, fileName))
-        }
-      })
-    }
-
-    const stream: ReadWriteStream = vinyl.src(this.patterns, {
-      allowEmpty: true,
-      cwd: this.baseDir
-    })
-
-    const transform = curryFileTransformer((file: File) => {
-      return this.transformer(file)
-    })
-
-    const collect = curryFileTransformer((file: File) => {
-      const { relative } = file
-      // Filter root file.
-      if (relative) {
-        this.files[relative] = file
-      }
-    })
-
-    const filter = curryFileTransformer((file: File) => {
-      const filtered = this.filters.some(_filter => !_filter(file))
-      if (filtered) {
-        return null
-      }
-    })
-
-    let filterStream = es.map(filter)
-    let transformStream = es.map(transform)
-    let collectStream = es.map(collect)
-
-    if (write) {
-      let destStream = vinyl.dest(destPath, { cwd: this.baseDir || process.cwd() })
-      stream
-        .pipe(filterStream)
-        .pipe(transformStream)
-        .pipe(destStream)
-        .pipe(collectStream)
-
-    } else {
-      stream
-        .pipe(filterStream)
-        .pipe(transformStream)
-        .pipe(collectStream)
-    }
-
-    return new Promise((resolve, reject) => {
-      collectStream
-        .on('end', () => resolve(this.files))
-        .on('error', reject)
-    })
-  }
-
-  private async transformer(file: File) {
+  private async transformFile(file: File) {
     // 1. middleware
     try {
       await new Promise((resolve, reject) => {
