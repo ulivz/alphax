@@ -79,6 +79,7 @@ export function curryFileTransformer(fn) {
 
 export function getRenamerByConfig(renameConfig: RenameConfig): (filepath: string) => string {
   return function (filepath: string) {
+    console.log('filepath: ' + filepath + ' ' + typeof filepath)
     Object.keys(renameConfig).forEach(pattern => {
       filepath = filepath.replace(pattern, renameConfig[pattern])
     })

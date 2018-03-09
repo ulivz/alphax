@@ -32,7 +32,7 @@ export interface filtersConfig {
 }
 
 export interface Changelog {
-  [relative:string]: string[]
+  [relative: string]: string[]
 }
 
 export interface AlphaXSrcOptions extends SrcOptions {
@@ -153,9 +153,7 @@ export class AlphaX extends EventEmitter {
     const transformStream = es.map(transform)
     const collectStream = es.map(collect)
 
-    stream
-      .pipe(filterStream)
-      .pipe(transformStream)
+    stream.pipe(filterStream).pipe(transformStream)
 
     if (write) {
       let destStream = dest(destPath, options || {})
@@ -193,10 +191,13 @@ export class AlphaX extends EventEmitter {
   private async transformFile(file: File) {
     // 1. middleware
     try {
-      await new Promise((resolve, reject) => {
+      await new Promise((resolve) => {
         ware().use(this.middlewares).run(file, (err: Error) => {
-          if (err) return reject(err)
-          resolve()
+          if (err) {
+            console.log(err)
+          } else {
+            resolve()
+          }
         })
       })
     } catch (error) {
