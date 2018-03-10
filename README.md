@@ -10,7 +10,7 @@
 <a href="https://codecov.io/gh/ulivz/alphax" alt="codecov"> <img src="https://codecov.io/gh/ulivz/alphax/branch/master/graph/badge.svg?maxAge=2592000&amp;style=flat"></img> </a>
 </p>
 
-Fuel of scaffolding.
+<p align="center"><b><i><h3>Fuel of scaffolding.</h3></i></b></p>
 
 ## What is alphax?
 
