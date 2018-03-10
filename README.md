@@ -1,11 +1,14 @@
-# alphax
-
 <p align="center">
-  <img src="./.media/alphax.png" style="filter: brightness(0);" alt="">
+  <img src="./.media/alphax.png" alt="">
 </p>
 
-[![NPM version](https://img.shields.io/npm/v/alphax.svg?style=flat)](https://npmjs.com/package/alphax) [![NPM downloads](https://img.shields.io/npm/dm/alphax.svg?style=flat)](https://npmjs.com/package/alphax) [![CircleCI](https://circleci.com/gh/ULIVZ/alphax/tree/master.svg?style=shield)](https://circleci.com/gh/ULIVZ/alphax/tree/master)  [![codecov](https://codecov.io/gh/ULIVZ/alphax/branch/master/graph/badge.svg)](https://codecov.io/gh/ULIVZ/alphax)
- [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/ULIVZ/donate)
+<p align="center">
+<a href="https://npmjs.com/package/alphax"><img src="https://img.shields.io/npm/v/alphax.svg?style=flat" alt="NPM version"></a> 
+<a href="https://npmjs.com/package/alphax"><img src="https://img.shields.io/npm/dm/alphax.svg?style=flat" alt="NPM downloads"></a> 
+<!-- <a href="https://circleci.com/gh/ulivz/alphax"><img src="https://img.shields.io/circleci/project/ulivz/alphax/master.svg?style=flat" alt="Build Status"></a> --> 
+<a href="https://github.com/ulivz/donate"><img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat" alt="donate"></a> 
+<a href="https://codecov.io/gh/ulivz/alphax" alt="codecov"> <img src="https://codecov.io/gh/ulivz/alphax/branch/master/graph/badge.svg?maxAge=2592000&amp;style=flat"></img> </a>
+</p>
 
 Fuel of scaffolding.
 
