@@ -13,10 +13,10 @@ export type TransformFn = (contents: string, file: File) => Promise<string> | st
 export type Task = (app: typeof AlphaX) => Promise<void> | void
 
 /**
- * A Filter that accepts the vinyl file instance,
+ * A Filter that accepts the file path(relative),
  * return false will exclude the file.
  */
-export type Filter = (file: File) => boolean
+export type Filter = (filepath: string) => string
 
 /**
  * A Renamer that accepts an old path (It's actually a relative path),

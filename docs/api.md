@@ -114,3 +114,50 @@ const app = alphax()
 
   The real dest process. All selected files by globs will be passed through the middleware, filter, renmae, transform, and the final files will be generated. At this comment, an alphax app's life ends.
   
+
+### app.task(task)
+
+#### task
+
+- Type: `(app: AlphaX) => Promise<void> | void`
+
+
+### app.filter(filter)
+
+#### filter
+
+- Type: `(filepath: string) => string`
+
+
+### app.rename(renamer)
+
+#### renamer
+
+- Type: `(filepath: string) => string`
+
+
+### app.transform(transformFn)
+
+#### transformFn
+
+- Type: `(contents: string, file: File) => Promise<string> | string`
+
+
+### app.fileContent(filepath)
+
+#### filepath
+
+- Type: string
+
+
+### app.fileMap()
+
+
+### app.fileList()
+
+
+### app.files
+
+### app.renameChangelog
+
+### app.meta
