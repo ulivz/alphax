@@ -1,16 +1,22 @@
 const path = require('path')
-const ask = require('inquirer')
+const inquirer = require('inquirer')
 const pupa = require('pupa')
-const alphax = require('alphax')
+const alphax = require('../../dist/alphax')
 
 const app = alphax()
 
 app
   .src('**', { baseDir: path.resolve('template') })
   .task(prompt)
-  .transformFn(template)
+  .task(log)
+  .transform(template)
+  .rename(filepath => {
+    return filepath.replace('{name}', app.meta.name)
+  })
   .filter(filepath => {
     const { test } = app.meta
+    console.log(filepath)
+    console.log(test)
     if (!test && filepath === 'test.js') {
       return false
     }
@@ -26,17 +32,23 @@ app
   })
 
 function prompt(app) {
-  return ask.prompt([{
-    name: 'name',
-    message: `what's your project's name:`,
-    validate: v => Boolean(v)
-  }, {
-    name: 'test',
-    message: 'Do you want unit test:',
-    type: 'confirm'
-  }]).then(answers => {
+  return inquirer.prompt([
+    {
+      name: 'name',
+      message: `what's your project's name:`,
+      validate: v => /[a-zA-Z0-9_-]*/.test(v)
+    },
+    {
+      name: 'test',
+      message: 'Do you want unit test:',
+      type: 'confirm'
+    }]).then((answers) => {
     app.meta = answers
   })
+}
+
+function log() {
+  console.log('Finished')
 }
 
 function template(content) {
