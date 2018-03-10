@@ -110,7 +110,7 @@ export class AlphaX extends EventEmitter {
     return this
   }
 
-  public transformFn(transformFn: TransformFn) {
+  public transform(transformFn: TransformFn) {
     this.transformFn = transformFn
     return this
   }
@@ -164,7 +164,7 @@ export class AlphaX extends EventEmitter {
     const transform = curryFileTransformer((file: File) => this.transformFile(file))
 
     const filter = curryFileTransformer((file: File) =>
-      this.filters.some(_filter => !_filter(file)) ? null : true)
+      this.filters.some(_filter => !_filter(file.relative)) ? null : true)
 
     const collect = curryFileTransformer((file: File) => {
       const { relative } = file
