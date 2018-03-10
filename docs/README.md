@@ -1,7 +1,6 @@
-# alphaX
-
 <p align="center">
- <b><i>Fuel of scaffolding.</i></b>
+  <img src="./.media/alphax.png" alt="">
+  <b><i>Fuel of scaffolding.</i></b>
 </p>
 
 ## Features
@@ -15,7 +14,7 @@
 
 ## Quick Start
 
-Take file copy as an example, if you want to copy all the files in './src' to './dist', You can do this:
+Take copy files as an example, if you want to copy all the files from `./src` to `./dist`, you can just do this:
 
 ```js
 import alphax from 'alphax'
@@ -23,4 +22,4 @@ import alphax from 'alphax'
 alphax().src('./src/**').dest('./dist')
 ```
 
-Check out all the [APIs](/api) or [Tips](/tips)
+Of course, alphax is far more than that, check out all the [APIs](/api) and [Tips](/tips)
