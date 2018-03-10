@@ -64,7 +64,6 @@ export class AlphaX extends EventEmitter {
 
   constructor() {
     super()
-    this.middlewares = []
     this.meta = {}
     this.files = {}
     this.filters = []
@@ -78,11 +77,13 @@ export class AlphaX extends EventEmitter {
     filters = {},
     transform,
     tasks = [],
+    use = [],
     ...options
   }: AlphaXSrcOptions = {}) {
     this.baseDir = baseDir
     this.patterns = isArray(patterns) ? patterns : [patterns]
     this.tasks = isArray(tasks) ? tasks : [tasks]
+    this.middlewares = isArray(use) ? use : [use]
     this.renameConfig = rename
     this.filtersConfig = filters
     this.transformFn = transform
