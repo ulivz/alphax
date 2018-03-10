@@ -68,7 +68,6 @@ export class AlphaX extends EventEmitter {
     this.meta = {}
     this.files = {}
     this.filters = []
-    this.tasks = []
     this.renamers = []
     this.renameChangelog = {}
   }
@@ -77,14 +76,16 @@ export class AlphaX extends EventEmitter {
     baseDir = '.',
     rename = {},
     filters = {},
-    transformFn,
+    transform,
+    tasks = [],
     ...options
   }: AlphaXSrcOptions = {}) {
     this.baseDir = baseDir
     this.patterns = isArray(patterns) ? patterns : [patterns]
+    this.tasks = isArray(tasks) ? tasks : [tasks]
     this.renameConfig = rename
     this.filtersConfig = filters
-    this.transformFn = transformFn
+    this.transformFn = transform
     this.options = options
     options.cwd = options.cwd || baseDir
     return this

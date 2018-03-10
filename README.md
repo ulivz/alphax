@@ -7,9 +7,9 @@ Fuel of scaffolding.
 
 ## What is alphax?
 
-alphax provides JSON-like APIs that allow you to manipulate files freely. Now it supports [glob](https://github.com/isaacs/node-glob), reanme, filter and transform during dest.
+alphax provides JSON-like and chained APIs that allow you to manipulate files freely. Now it supports [glob](https://github.com/isaacs/node-glob), task, reanme, filter and transform file during dest.
 
-BTW, alphax was named from the Greek initials `α` and [spaceX](http://www.spacex.com/) I admire.
+BTW, alphax was named from the Greek initials _**α**_ and [spaceX](http://www.spacex.com/) I admire.
 
 ## Install
 
@@ -23,11 +23,52 @@ npm i alphax --save
 ```js
 import { alphax } from 'alphax'
 // Or cjs: const app = require('alphax')
+```
+
+- Chained Style
+
+```js
+alphax()
+  .src('**')
+  .task(task1)
+  .task(task2)
+  .task(task3)
+  .rename(filepath => filepath.replace('{name}', name))
+  .rename(filepath => filepath.replace('{age}', age))
+  .transform(content => content.replace('{name}', name))
+  .filter(filepath => filepath.endWith('.js'))
+  .filter(filepath => !filepath.startWith('test'))
+  .dest('dist')
+  .then(files => console.log(files))
+  .catch(error => console.log(error))
+```
+
+- Config Style
+
+```js
+const config = {
+	tasks: [task1, task3, task3],
+	rename: {
+		'{name}': name,
+		'{age}': age
+	},
+	filter: {
+		'app.js': true,
+		'test.js': false
+	},
+	transform(content) {
+		return content.replace('{name}', name)
+	}
+}
 
 alphax()
-  .src('src/**')
+  .src('**', config)
   .dest('dist')
+  .then(files => console.log(files))
+  .catch(error => console.log(error))
 ```
+
+
 
 ## API
 
