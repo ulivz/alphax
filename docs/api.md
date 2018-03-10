@@ -20,7 +20,7 @@ const app = alphax()
 - Type: `Object`
 - Required: `false`
 
-#### options.rename
+#### rename
 
 - Type: `{ [key: string]: string }`
 - Required: `false`
@@ -34,7 +34,7 @@ const app = alphax()
   }
   ```
 
-#### options.filter
+#### filter
 
 - Type: `{ [key: string]: string }`
 - Required: `false`
@@ -48,14 +48,14 @@ const app = alphax()
   }
   ```
 
-#### options.transform
+#### transform
 
 - Type: `(contents: string, file: File) => Promise<string> | string`
 - Required: `false`
 
   A transform function, the first parameter is each file's contents, and each file's [vinyl file](https://github.com/gulpjs/vinyl) object will be passed as the second parameter, the returned string will be the new contents of the file.
 
-#### options.baseDir
+#### baseDir
 
 - Type: `string`
 - Required: `false`
@@ -64,7 +64,7 @@ const app = alphax()
   Specify a baseDir, this path will be used for filter conversion.
 
 
-#### options.tasks
+#### tasks
 
 - Type: `Task | Task[]`
 - Required: `false`
@@ -73,7 +73,7 @@ const app = alphax()
   Tasks of serial execution, can be a synchronous or asynchronous(return Promise) function. It will be executed in turn before the real dest process.
 
 
-#### options.use
+#### use
 
 - Type: `Middleware | Middleware[]`
 - Required: `false`
@@ -93,8 +93,6 @@ Rest options please refers to [vinyl-fs](https://github.com/gulpjs/vinyl-fs)
 - Required: `false`
 
   alphax use [ware](https://github.com/segmentio/ware) to create middleware layer. All middlewares will run sequentially at the beginning of each file dest. A middleware accepts a [vinyl file](https://github.com/gulpjs/vinyl) as the first parameter, and you can do any possible convesion of file in the middleware. 
- 
-  The [rename](#options-rename) function is also based on using its own middleware. 
   
   A simple logger middleware:
   
@@ -103,6 +101,8 @@ Rest options please refers to [vinyl-fs](https://github.com/gulpjs/vinyl-fs)
 	  console.log('Start to dest file: ' + file.relative)
   })
   ```
+  
+  !> The internal [rename](#options-rename) function's implementation is based on using middleware. 
   
   
 ### app.dest(destPath, [options])
