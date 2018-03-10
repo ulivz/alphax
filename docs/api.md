@@ -80,9 +80,9 @@ const app = alphax()
 - Default: `[]`
 
   Middleware for file processing, it will be executed in turn at the earliest stage of processing each file.
-  
+ 
 
-Rest options please refers to [vinyl-fs](https://github.com/gulpjs/vinyl-fs)
+?> Rest options please refers to [vinyl-fs](https://github.com/gulpjs/vinyl-fs)
   
 
 ### app.use(middleware)
@@ -102,7 +102,7 @@ Rest options please refers to [vinyl-fs](https://github.com/gulpjs/vinyl-fs)
   })
   ```
   
-  !> The internal [rename](#options-rename) function's implementation is based on using middleware. 
+!> The internal [rename](#options-rename) function's implementation is based on using middleware. 
   
   
 ### app.dest(destPath, [options])
