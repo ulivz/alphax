@@ -4,6 +4,7 @@
       "noImplicitAny": true,
       "removeComments": true,
       "target": "es2015",
+      "importHelpers": true,
       "lib": [
         "es2015"
       ],
