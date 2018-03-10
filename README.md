@@ -1,5 +1,9 @@
 # alphax
 
+<p align="center">
+  <img src="./.media/alphax.png" style="filter: brightness(0);" alt="">
+</p>
+
 [![NPM version](https://img.shields.io/npm/v/alphax.svg?style=flat)](https://npmjs.com/package/alphax) [![NPM downloads](https://img.shields.io/npm/dm/alphax.svg?style=flat)](https://npmjs.com/package/alphax) [![CircleCI](https://circleci.com/gh/ULIVZ/alphax/tree/master.svg?style=shield)](https://circleci.com/gh/ULIVZ/alphax/tree/master)  [![codecov](https://codecov.io/gh/ULIVZ/alphax/branch/master/graph/badge.svg)](https://codecov.io/gh/ULIVZ/alphax)
  [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/ULIVZ/donate)
 
