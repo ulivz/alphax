@@ -92,6 +92,7 @@ alphax()
   .catch(error => console.log(error))
 ```
 
+For detailed usage please head to [v2js.com/alphax](http://www.v2js.com/alphax).
 
 ## Projects Using alphaX
 
