@@ -1,3 +1,13 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/ULIVZ/alphaX/compare/v0.1.3...v1.0.0) (2018-03-11)
+
+
+### Features
+
+* update scaffolding example ([bf4faf6](https://github.com/ULIVZ/alphaX/commit/bf4faf6))
+
+
+
 <a name="0.1.3"></a>
 ## [0.1.3](https://github.com/ULIVZ/alphaX/compare/v0.0.8...v0.1.3) (2018-03-09)
 
