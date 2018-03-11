@@ -20,6 +20,10 @@ alphax provides very simple _JSON-like_ and _chained_ APIs that allow you to man
 
 BTW, alphax was named from the Greek initials _**α**_ and [spaceX](http://www.spacex.com/) I admire.
 
+## Features
+
+
+
 ## Install
 
 ```bash
@@ -79,6 +83,21 @@ alphax()
   .then(files => console.log(files))
   .catch(error => console.log(error))
 ```
+
+
+## Projects Using alphaX
+
+- [**_poz_**](https://github.com/ulivz/poz): 🏹 Programmable scaffolding generator.
+- Feel free to add yours here :)
+
+
+## Prior art
+
+alphaX wouldn't exist if it wasn't for excellent prior art, alphaX is inspired by these projects:
+
+- [**_vinyl-fs_**](https://github.com/gulpjs/vinyl-fs)
+- [**_majo_**](https://github.com/egoist/majo)
+
 
 ## Contributing
 

@@ -9,8 +9,8 @@
 * 📦 Chained API.
 * 💅 Using middlewares to process each file.
 * 🚨 Asynchronous task control.
-* 🌈 Renaming file with a pure function or configuration.
-* 🎯 Filtering file with a pure function or configuration.
+* 🌈 Renaming files with a pure function or configuration.
+* 🎯 Filtering files with a pure function or configuration.
 
 ## Quick Start
 
@@ -21,4 +21,4 @@ import alphax from 'alphax'
 alphax().src('./src/**').dest('./dist')
 ```
 
-Of course, alphax is far more than that, check out all the [APIs](/api) and [Tips](/tips)
+Of course, alphax is far more than that, check out the [**_API_**](/api) and [**_example/scaffolding_**](/example/scaffolding)

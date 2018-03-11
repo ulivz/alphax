@@ -12,7 +12,7 @@ const app = alphax()
 - Type: `string[] | string`
 - Required: `true`
 
-  The directory to find source files by given glob patterns. For example, if you want to check all the files in src, you can use `src/**`.
+  The directory to find source files by given glob patterns. eg. if you want to check all the files in src, you can use `src/**`.
 
 ### options
 

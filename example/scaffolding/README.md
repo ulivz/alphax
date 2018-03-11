@@ -1,3 +1,5 @@
+# Scaffolding
+
 How does it work:
 
 - Use CLI prompt to retrive data from user
