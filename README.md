@@ -16,7 +16,7 @@
 
 ## What is alphaX?
 
-alphaX provides very simple _JSON-like_ and _chained_ APIs that allow you to manipulate files freely. Now it supports [**_glob_**](https://github.com/isaacs/node-glob), **_task control_**, **_middleware_**, **_reanme_**, **_filter_** and **_transform file_**.
+alphaX provides very simple _JSON-like_ and _chained_ APIs that allow you to manipulate files freely. Now it supports [**_glob_**](https://github.com/isaacs/node-glob), **_task control_**, **_middleware_**, **_reanme_**, **_filter_** and **_transform file_** as well.
 
 BTW, alphaX was named from the Greek initials _**α**_ and [spaceX](http://www.spacex.com/) I admire.
 
