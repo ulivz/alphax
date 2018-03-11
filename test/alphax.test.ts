@@ -17,7 +17,7 @@ describe('alphax', () => {
           'lib': 'lib2',
           '.js': '.ts'
         },
-        transformFn(content, file) {
+        transform(content, file) {
           return ' ==== source name is ' + content
         }
       })
@@ -43,7 +43,7 @@ describe('alphax', () => {
           'lib': 'lib2',
           '.js': '.ts'
         },
-        transformFn(content, file) {
+        transform(content, file) {
           return ' ==== source name is ' + content
         }
       })
@@ -62,11 +62,11 @@ describe('alphax', () => {
     await app
       .src('**', {
         baseDir: path.resolve('package'),
-        transformFn(content, file) {
+        transform(content, file) {
           return file.relative + ': ' + content
         }
       })
-      .filter(file => file.relative.indexOf('style') === -1)
+      .filter(filepath => filepath.indexOf('style') === -1)
       .dest(null)
 
     expect(app.fileMap()).toMatchSnapshot()
@@ -81,11 +81,11 @@ describe('alphax', () => {
     await app
       .src('**', {
         baseDir: path.resolve('package'),
-        transformFn(content, file) {
+        transform(content, file) {
           return file.relative + ': ' + content
         }
       })
-      .filter(file => file.relative.indexOf('style') > -1)
+      .filter(filepath => filepath.indexOf('style') > -1)
       .dest(null)
 
     expect(app.fileMap()).toMatchSnapshot()
@@ -100,7 +100,7 @@ describe('alphax', () => {
     await app
       .src('**', {
         baseDir: path.resolve('package'),
-        transformFn(content, file) {
+        transform(content, file) {
           return file.relative + ': ' + content
         }
       })
