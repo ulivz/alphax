@@ -87,7 +87,7 @@ const app = alphax()
 - Type: `(file: File, meta: any) => any | Array<(file: File, meta: any) => any>`
 - Required: `false`
 
-  Middleware for processing each file , it will be executed in turn at the earliest stage of processing each file. alphax use [**_ware_**](https://github.com/segmentio/ware) to create middleware layer. A middleware accepts a [**_vinyl_**](https://github.com/gulpjs/vinyl) file instance as the first parameter, and [**_meta_**](#app-meta). as the second parameter, you can do any possible convesion of file in the middleware. 
+  Middleware for processing each file , it will be executed in turn at the earliest stage of processing each file. alphax use [**_ware_**](https://github.com/segmentio/ware) to create middleware layer. A middleware accepts a [**_vinyl_**](https://github.com/gulpjs/vinyl) file instance as the first parameter, and [**_meta_**](#app-meta) as the second parameter, you can do any possible convesion of file in the middleware. 
   
   Define a simple logger middleware:
 
@@ -138,7 +138,7 @@ const app = alphax()
 - Required: `false`
 - Default: `.`
 
-  It's manipulated relative path to the [**_outDir_**](#outdir)..
+  A relative path to the [**_outDir_**](#outdir).
   
   <p class="tip">
     <code>app.dest('./src')</code> is equivalent to <code>app.dest('.', { baseDir: 'src'})</code>.
