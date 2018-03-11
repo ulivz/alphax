@@ -1,3 +1,13 @@
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/ULIVZ/alphaX/compare/v1.0.0...v1.0.1) (2018-03-11)
+
+
+### Features
+
+* support 'baseDir' option for app.dest() ([b8cb688](https://github.com/ULIVZ/alphaX/commit/b8cb688))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/ULIVZ/alphaX/compare/v0.1.3...v1.0.0) (2018-03-11)
 
