@@ -14,11 +14,11 @@
   <b><i>Fuel of scaffolding.</i></b>
 </p>
 
-## What is alphax?
+## What is alphaX?
 
-alphax provides very simple _JSON-like_ and _chained_ APIs that allow you to manipulate files freely. Now it supports [**_glob_**](https://github.com/isaacs/node-glob), **_task control_**, **_middleware_**, **_reanme_**, **_filter_** and **_transform file_**.
+alphaX provides very simple _JSON-like_ and _chained_ APIs that allow you to manipulate files freely. Now it supports [**_glob_**](https://github.com/isaacs/node-glob), **_task control_**, **_middleware_**, **_reanme_**, **_filter_** and **_transform file_**.
 
-BTW, alphax was named from the Greek initials _**α**_ and [spaceX](http://www.spacex.com/) I admire.
+BTW, alphaX was named from the Greek initials _**α**_ and [spaceX](http://www.spacex.com/) I admire.
 
 
 ## Features
@@ -34,8 +34,9 @@ BTW, alphax was named from the Greek initials _**α**_ and [spaceX](http://www.s
 ## Install
 
 ```bash
-npm i alphax --save
-# yarn add alphax
+npm i alphax --save 
+# Pay attention to the case, NPM does not support capitals. 😅
+# Or yarn add alphax
 ```
 
 ## Usage
@@ -117,7 +118,7 @@ alphaX wouldn't exist if it wasn't for excellent prior art, alphaX is inspired b
 
 ## Author
 
-**alphax** © [ulivz](https://github.com/ULIVZ), Released under the [MIT](./LICENSE) License.<br>
+**alphaX** © [ulivz](https://github.com/ULIVZ), Released under the [MIT](./LICENSE) License.<br>
 Authored and maintained by ulivz with help from contributors ([list](https://github.com/ULIVZ/alphax/contributors)).
 
 > [github.com/ulivz](https://github.com/ulivz) · GitHub [@ulivz](https://github.com/ULIVZ)
