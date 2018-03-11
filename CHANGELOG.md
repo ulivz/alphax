@@ -4,12 +4,12 @@
 
 ### Bug Fixes
 
-* fix some bugs ([56063c9](https://github.com/ULIVZ/alphaX/commit/56063c9))
+* fix some renaming bugs ([56063c9](https://github.com/ULIVZ/alphaX/commit/56063c9))
 
 
 ### Features
 
-* init ([462b997](https://github.com/ULIVZ/alphaX/commit/462b997))
+* rewrite core code and support chained API ([462b997](https://github.com/ULIVZ/alphaX/commit/462b997))
 
 
 
@@ -24,7 +24,7 @@
 
 ### Features
 
-* init ([462b997](https://github.com/ULIVZ/alphaX/commit/462b997))
+* Init for chained API ([462b997](https://github.com/ULIVZ/alphaX/commit/462b997))
 
 
 
@@ -34,7 +34,7 @@
 
 ### Features
 
-* passed every file's vinyl object as the 2nd parameters to the tranformFn function ([866a785](https://github.com/ULIVZ/alphaX/commit/866a785))
+* Passed every file's vinyl object as the 2nd parameters to the tranformFn function ([866a785](https://github.com/ULIVZ/alphaX/commit/866a785))
 
 
 
@@ -54,7 +54,7 @@
 
 ### Features
 
-* add type definition file ([41f3f94](https://github.com/ULIVZ/alphaX/commit/41f3f94))
+* Add type definition file ([41f3f94](https://github.com/ULIVZ/alphaX/commit/41f3f94))
 
 
 
@@ -69,15 +69,13 @@
 
 ### Bug Fixes
 
-* fix UT ([993574b](https://github.com/ULIVZ/alphaX/commit/993574b))
-* UT ([16414fc](https://github.com/ULIVZ/alphaX/commit/16414fc))
-* **$doc:** Add full doc ([8e9abf4](https://github.com/ULIVZ/alphaX/commit/8e9abf4))
+* Fix UT ([993574b](https://github.com/ULIVZ/alphaX/commit/993574b))
 
 
 ### Features
 
-* **$core:** finished basic functions ([b92c200](https://github.com/ULIVZ/alphaX/commit/b92c200))
-* enhance the transformFn and use default export ([8a1ae60](https://github.com/ULIVZ/alphaX/commit/8a1ae60))
+* Finished basic functions ([b92c200](https://github.com/ULIVZ/alphaX/commit/b92c200))
+* Enhance the transformFn and use default export ([8a1ae60](https://github.com/ULIVZ/alphaX/commit/8a1ae60))
 
 
 
