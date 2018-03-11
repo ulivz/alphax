@@ -107,30 +107,21 @@ export class AlphaX extends EventEmitter {
     return this
   }
 
-  public async dest(destPath: string, {
+  public async dest(outDir: string, {
     write = true,
+    baseDir = '.',
     ...options
   } = {}) {
 
-    try {
-      await new Promise((resolve) => {
-        ware().use(this.tasks).run(this, (err: Error) => {
-          if (err) {
-            console.log(err)
-          } else {
-            resolve()
-          }
-        })
-      })
-    } catch (error) {
-      this.emit('middleware-error', error)
-    }
+    options.cwd = options.cwd || baseDir
 
-    if (!destPath) {
+    if (!outDir) {
       write = false
+    } else {
+      outDir = path.join(outDir, baseDir)
     }
 
-    if (write && !destPath) {
+    if (write && !outDir) {
       throw new Error(
         'Expect first parameter to be dest path when writeable.'
       )
@@ -149,6 +140,20 @@ export class AlphaX extends EventEmitter {
           this.patterns.push('!' + path.join(this.baseDir, fileName))
         }
       })
+    }
+
+    try {
+      await new Promise((resolve) => {
+        ware().use(this.tasks).run(this, (err: Error) => {
+          if (err) {
+            console.log(err)
+          } else {
+            resolve()
+          }
+        })
+      })
+    } catch (error) {
+      this.emit('middleware-error', error)
     }
 
     const stream: NodeJS.ReadWriteStream = src(this.patterns, this.options)
@@ -170,7 +175,7 @@ export class AlphaX extends EventEmitter {
     const collectStream = es.map(collect)
 
     if (write) {
-      let destStream = dest(destPath, options || {})
+      let destStream = dest(outDir, options || {})
       stream.pipe(filterStream).pipe(transformStream).pipe(destStream).pipe(collectStream)
     } else {
       stream.pipe(filterStream).pipe(transformStream).pipe(collectStream)

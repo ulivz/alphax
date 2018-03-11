@@ -25,7 +25,7 @@ const app = alphax()
 - Required: `false`
 - Default: `.`
 
-  Specify a base directory, this path will be used for filter conversion. 
+  When globs is `'**'`, it's relative path to `process.cwd()`..
   
   <p class="tip">
     <code>app.src('src/\*\*')</code> is equivalent to <code>app.src('\*\*', { baseDir: 'src'})</code>.
@@ -104,11 +104,11 @@ const app = alphax()
 </p>
  
   
-## app.dest([destPath], [options])
+## app.dest([outDir], [options])
 
 - Return: `Promise<files>`
 
-### destPath
+### outDir
 
 - Type: `string`
 - Required: `false`
@@ -131,7 +131,19 @@ const app = alphax()
   // or: app.src('./src/**').dest(null)
   // or: app.src('./src/**').dest('./dist', { write: false })
   ```
+
+#### baseDir
+
+- Type: `string`
+- Required: `false`
+- Default: `.`
+
+  It's manipulated relative path to the [**_outDir_**](#outdir)..
   
+  <p class="tip">
+    <code>app.dest('./src')</code> is equivalent to <code>app.dest('.', { baseDir: 'src'})</code>.
+  </p>
+ 
 
 ## app.use(middleware)
 
