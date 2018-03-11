@@ -5,7 +5,7 @@
 <p align="center">
 <a href="https://npmjs.com/package/alphax"><img src="https://img.shields.io/npm/v/alphax.svg?style=flat" alt="NPM version"></a> 
 <a href="https://npmjs.com/package/alphax"><img src="https://img.shields.io/npm/dm/alphax.svg?style=flat" alt="NPM downloads"></a> 
-<!-- <a href="https://circleci.com/gh/ulivz/alphax"><img src="https://img.shields.io/circleci/project/ulivz/alphax/master.svg?style=flat" alt="Build Status"></a> --> 
+<a href="https://circleci.com/gh/ulivz/alphax"><img src="https://img.shields.io/circleci/project/ulivz/alphax/master.svg?style=flat" alt="Build Status"></a>
 <a href="https://github.com/ulivz/donate"><img src="https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&amp;style=flat" alt="donate"></a> 
 <a href="https://codecov.io/gh/ulivz/alphax" alt="codecov"> <img src="https://codecov.io/gh/ulivz/alphax/branch/master/graph/badge.svg?maxAge=2592000&amp;style=flat"></img> </a>
 </p>
