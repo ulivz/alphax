@@ -15,8 +15,6 @@ app
   })
   .filter(filepath => {
     const { test } = app.meta
-    console.log(filepath)
-    console.log(test)
     if (!test && filepath === 'test.js') {
       return false
     }
@@ -43,7 +41,7 @@ function prompt(app) {
       message: 'Do you want unit test:',
       type: 'confirm'
     }]).then((answers) => {
-    app.meta = answers
+    Object.assign(app.meta, answers)
   })
 }
 
