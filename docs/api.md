@@ -25,7 +25,7 @@ const app = alphax()
 - Required: `false`
 - Default: `.`
 
-  When globs is `'**'`, it's relative path to `process.cwd()`..
+  When globs is `'**'`, it's relative path to `process.cwd()`.
   
   <p class="tip">
     <code>app.src('src/\*\*')</code> is equivalent to <code>app.src('\*\*', { baseDir: 'src'})</code>.
@@ -40,8 +40,8 @@ const app = alphax()
   
   ```js
   rename: {
-    'a': 'A', // file names(file paths) that contains 'a' will be replaced with 'A'.
-    '.js': '.ts' // modify the file extension.
+    'a': 'A', // file paths that contains 'a' will be replaced with 'A'.
+    '.js': '.ts' // modify the file's extension.
   }
   ```
 
@@ -64,14 +64,14 @@ const app = alphax()
 - Type: `(contents: string, file: File) => Promise<string> | string`
 - Required: `false`
 
-  A transform function, the first parameter is each file's contents, and each file's [vinyl file](https://github.com/gulpjs/vinyl) object will be passed as the second parameter, the returned string will be the new contents of the file.
+  A transform function, the first parameter is each file's contents, and each file's [**_vinyl file_**](https://github.com/gulpjs/vinyl) object will be passed as the second parameter, the returned string will be the new contents of the file.
 
 #### tasks
 
 - Type: `Task | Task[]`
 - Required: `false`
   
-  Tasks of serial execution, can be a synchronous or asynchronous(return Promise) function. It will be executed in turn before the real dest process. to build a pure function, **current app instance will be passed as the first parameter**.
+  Tasks of serial execution, can be a synchronous or asynchronous(**_return Promise_**) function. It will be executed in turn before the real dest process. to build a pure function, **current app instance will be passed as the first parameter**.
 
   ```js
   function task1() {} // return Promise.  
@@ -206,17 +206,43 @@ app.fileContent('src/index.js') // => get the final content string
 
 ## app.fileMap()
 
-Returns a map whose key is the file's final relative path, and the value is the file's final content.
+Returns a map whose key is the file's final relative path, and the value is the file's final content:
 
+```json
+{
+  "src/app.js": "content string"
+  // ...
+}
+```
 
 ## app.fileList()
 
 Returns a array that contains all the final file's relative paths.
 
+```json
+[
+  "src/app.js"
+  // ...
+]
+```
 
 ## app.files
 
 A map of all final files' metadata. whose key is the file's final relative path, and the value is the [**_vinyl_**](https://github.com/gulpjs/vinyl) file instance.
+
+```json
+{
+  "src/app.js": {
+    "cwd": "string",
+    "path": "string",
+    "relative": "string",
+    "dirname": "string",
+    "contents": "ReadableStream | Buffer | null"
+    // ...
+  }
+  // ...
+}
+```
 
 ## app.renameChangelog
 
