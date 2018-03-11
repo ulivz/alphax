@@ -2,7 +2,6 @@
 
 ```js
 import alphax from 'alphax'
-
 const app = alphax()
 ```
 
@@ -20,31 +19,43 @@ const app = alphax()
 - Type: `Object`
 - Required: `false`
 
+#### baseDir
+
+- Type: `string`
+- Required: `false`
+- Default: `.`
+
+  Specify a base directory, this path will be used for filter conversion. 
+  
+  <p class="tip">
+    <code>app.src('src/\*\*')</code> is equivalent to <code>app.src('\*\*', { baseDir: 'src'})</code>.
+  </p>
+
 #### rename
 
 - Type: `{ [key: string]: string }`
 - Required: `false`
 
-  An object for rename. For example:
+  A plain object for rename:
   
   ```js
   rename: {
-    'a': 'A', // All filenames containing 'a' will replace 'a' with 'A'
-    '.js': '.ts' // Modify the file extension
+    'a': 'A', // file names(file paths) that contains 'a' will be replaced with 'A'.
+    '.js': '.ts' // modify the file extension.
   }
   ```
 
-#### filter
+#### filters
 
 - Type: `{ [key: string]: string }`
 - Required: `false`
 
-  An object for filter. For example:
+  A plain object for filtering files, whose key can be a relative file path or glob string:
   
   ```js
-  filter: {
-    'src/**': data.src, // The contents of src will be copied only if data.src is true 
-    'app/**': data.app  // ditto.
+  filters: {
+    'src/**': true, // contents of 'src' will be excluded.
+    'app/**': false  // contents of 'app' will be included.
   }
   ```
 
@@ -55,109 +66,172 @@ const app = alphax()
 
   A transform function, the first parameter is each file's contents, and each file's [vinyl file](https://github.com/gulpjs/vinyl) object will be passed as the second parameter, the returned string will be the new contents of the file.
 
-#### baseDir
-
-- Type: `string`
-- Required: `false`
-- Default: `.`
-
-  Specify a baseDir, this path will be used for filter conversion.
-
-
 #### tasks
 
 - Type: `Task | Task[]`
 - Required: `false`
-- Default: `[]`
+  
+  Tasks of serial execution, can be a synchronous or asynchronous(return Promise) function. It will be executed in turn before the real dest process. to build a pure function, **current app instance will be passed as the first parameter**.
 
-  Tasks of serial execution, can be a synchronous or asynchronous(return Promise) function. It will be executed in turn before the real dest process.
+  ```js
+  function task1() {} // return Promise.  
+  function task2() {} // return void.
+  function task3() {} // return Promise.
 
+  // Tasks will be executed sequentially
+  tasks: [task1, task2, task3]
+  ```
 
 #### use
 
-- Type: `Middleware | Middleware[]`
-- Required: `false`
-- Default: `[]`
-
-  Middleware for file processing, it will be executed in turn at the earliest stage of processing each file.
- 
-
-?> Rest options please refers to [vinyl-fs](https://github.com/gulpjs/vinyl-fs)
-  
-
-### app.use(middleware)
-
-#### middleware
-
-- Type: `(ctx: File) => any`
+- Type: `(file: File, meta: any) => any | Array<(file: File, meta: any) => any>`
 - Required: `false`
 
-  alphax use [ware](https://github.com/segmentio/ware) to create middleware layer. All middlewares will run sequentially at the beginning of each file dest. A middleware accepts a [vinyl file](https://github.com/gulpjs/vinyl) as the first parameter, and you can do any possible convesion of file in the middleware. 
+  Middleware for processing each file , it will be executed in turn at the earliest stage of processing each file. alphax use [**_ware_**](https://github.com/segmentio/ware) to create middleware layer. A middleware accepts a [**_vinyl_**](https://github.com/gulpjs/vinyl) file instance as the first parameter, and [**_meta_**](#app-meta). as the second parameter, you can do any possible convesion of file in the middleware. 
   
-  A simple logger middleware:
-  
+  Define a simple logger middleware:
+
   ```js
-  app.use((file) => {
-	  console.log('Start to dest file: ' + file.relative)
-  })
+  use: (file, meta) => {
+    console.log('Starting processing: ' + file.relative)
+  }
   ```
   
-!> The internal [rename](#options-rename) function's implementation is based on using middleware. 
-  
-  
-### app.dest(destPath, [options])
+  The internal [_**rename**_](#rename) feature's implementation is also based on using middleware. 
 
-#### destPath
+<p class="tip">
+  Rest available options please refers to [**_vinyl-fs_**](https://github.com/gulpjs/vinyl-fs).
+</p>
+ 
+  
+## app.dest([destPath], [options])
+
+- Return: `Promise<files>`
+
+### destPath
 
 - Type: `string`
-- Required: `true`
+- Required: `false`
 
   The real dest process. All selected files by globs will be passed through the middleware, filter, renmae, transform, and the final files will be generated. At this comment, an alphax app's life ends.
+
+
+### options
+
+#### write
+
+- Type: `boolean`
+- Required: `false`
+- default: `true`
+
+  Whether to write the files or not. it's set to false for testing usually.
+  
+  ```js
+  app.src('./src/**').dest()
+  // or: app.src('./src/**').dest(null)
+  // or: app.src('./src/**').dest('./dist', { write: false })
+  ```
   
 
-### app.task(task)
+## app.use(middleware)
 
-#### task
+FP grammar sugar for [**_option.use_**](#use).
 
-- Type: `(app: AlphaX) => Promise<void> | void`
+```js
+app.use((file) => {
+  console.log('Starting processing: ' + file.relative)
+})
+```
+
+## app.task(task)
+
+FP grammar sugar for [**_option.tasks_**](#tasks).
+
+```js
+app.task((app) => {
+  return prompt(/* prompts */).then((anwsers)=>{
+    app.meta = anwsers
+  })
+})
+```
+
+## app.filter(filter)
+
+FP grammar sugar for [**_option.filters_**](#filters).
+
+```js
+app.filter(filepath => filepath.endsWith('.js')) // Only includes JavaScript files
+```
+
+## app.rename(renamer)
+
+FP grammar sugar for [**_option.rename_**](#rename).
+
+```js
+app.rename(filepath => filepath.replace('{name}', myName))
+```
+
+## app.transform(transformFn)
+
+FP grammar sugar for [**_option.transform_**](#transform).
+
+```js
+app.transform(contents=> handlebars.render(contents, ctx))
+```
+
+## app.fileContent(filepath)
+
+Retrieve the file content through the file path.
+
+```js
+app.fileContent('src/index.js') // => get the final content string
+```
+
+<p class="warning">
+  Since `alphax` would rename files, when you use the initial relative path of the file, you may not be able to get the content of the file you want. and you can get the final name of the file through [**_renameChangelog_**](#app-renamechangelog).
+</p>
 
 
-### app.filter(filter)
+## app.fileMap()
 
-#### filter
-
-- Type: `(filepath: string) => string`
+Returns a map whose key is the file's final relative path, and the value is the file's final content.
 
 
-### app.rename(renamer)
+## app.fileList()
 
-#### renamer
-
-- Type: `(filepath: string) => string`
+Returns a array that contains all the final file's relative paths.
 
 
-### app.transform(transformFn)
+## app.files
 
-#### transformFn
+A map of all final files' metadata. whose key is the file's final relative path, and the value is the [**_vinyl_**](https://github.com/gulpjs/vinyl) file instance.
 
-- Type: `(contents: string, file: File) => Promise<string> | string`
+## app.renameChangelog
 
+A map of all files's rename changelog. for exmaple. if there is file named `src/app.js`, and you wrote 2 filter function:
 
-### app.fileContent(filepath)
+```js
+app.src('src/app.js')
+  .filter(filepath => filepath.replace('.js', '.ts'))
+  .filter(filepath => filepath.replace('app', 'index'))
+  .dest(null)  
+  .then(files => {
+    console.log(app.renameChangelog)
+  })
+```
 
-#### filepath
+Then the renameChangelog will be:
 
-- Type: string
+```json
+{
+  "src/app.js": [
+    "src/app.js",
+    "src/app.ts",
+    "src/index.ts"
+  ]
+}
+```
 
+## app.meta
 
-### app.fileMap()
-
-
-### app.fileList()
-
-
-### app.files
-
-### app.renameChangelog
-
-### app.meta
+An object which is shared across middlewares, you can use this to pass down data from a middleware to another.

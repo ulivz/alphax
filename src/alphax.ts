@@ -7,10 +7,10 @@ import { src, dest, SrcOptions } from 'vinyl-fs'
 import { isArray, isFunction, isPromise, curryFileTransformer, isBuffer, getRenamerByConfig } from './utils'
 import { getRenameMiddleware } from './middlewares'
 
-export type Middleware = (file: File) => any
+export type Middleware = (file: File, meta: any) => any
 export type Glob = string[] | string
 export type TransformFn = (contents: string, file: File) => Promise<string> | string
-export type Task = (app: typeof AlphaX) => Promise<void> | void
+export type Task = (app: AlphaX) => Promise<void> | void
 
 /**
  * A Filter that accepts the file path(relative),
@@ -216,7 +216,7 @@ export class AlphaX extends EventEmitter {
     // 1. middleware
     try {
       await new Promise((resolve) => {
-        ware().use(this.middlewares).run(file, (err: Error) => {
+        ware().use(this.middlewares).run(file, this.meta, (err: Error) => {
           if (err) {
             console.log(err)
           } else {

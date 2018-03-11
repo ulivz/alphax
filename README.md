@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./.media/alphax.png" alt="">
+  <img src="https://raw.githubusercontent.com/ulivz/alphax/master/.media/alphax.png" alt="">
 </p>
 
 <p align="center">
