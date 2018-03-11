@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <b><i>Fuel of scaffolding.</i></b>
+  <b><i>Fueling your scaffolding.</i></b>
 </p>
 
 ## What is alphaX?
@@ -49,48 +49,48 @@ const app = alphax()
 
 - **_Chained Style_**
 
-  ```js
-  alphax()
-    .src('**')
-    .task(task1)
-    .task(task2)
-    .task(task3)
-    .use(file => file.content += Date.now())
-    .rename(filepath => filepath.replace('{name}', name))
-    .rename(filepath => filepath.replace('{age}', age))
-    .transform(content => content.replace('{name}', name))
-    .filter(filepath => filepath.endWith('.js'))
-    .filter(filepath => !filepath.startWith('test'))
-    .dest('dist')
-    .then(files => console.log(files))
-    .catch(error => console.log(error))
-  ```
+```js
+alphax()
+  .src('**')
+  .task(task1)
+  .task(task2)
+  .task(task3)
+  .use(file => file.content += Date.now())
+  .rename(filepath => filepath.replace('{name}', name))
+  .rename(filepath => filepath.replace('{age}', age))
+  .transform(content => content.replace('{name}', name))
+  .filter(filepath => filepath.endWith('.js'))
+  .filter(filepath => !filepath.startWith('test'))
+  .dest('dist')
+  .then(files => console.log(files))
+  .catch(error => console.log(error))
+```
 
 - **_Config Style_**
 
-  ```js
-  const config = {
-    tasks: [task1, task3, task3],
-    use: file => file.content += Date.now(),
-    rename: {
-      '{name}': name,
-      '{age}': age
-    },
-    filter: {
-      'app.js': true,
-      'test.js': false
-    },
-    transform(content) {
-      return content.replace('{name}', name)
-    }
+```js
+const config = {
+  tasks: [task1, task3, task3],
+  use: file => file.content += Date.now(),
+  rename: {
+    '{name}': name,
+    '{age}': age
+  },
+  filter: {
+    'app.js': true,
+    'test.js': false
+  },
+  transform(content) {
+    return content.replace('{name}', name)
   }
-  
-  alphax()
-    .src('**', config)
-    .dest('dist')
-    .then(files => console.log(files))
-    .catch(error => console.log(error))
-  ```
+}
+
+alphax()
+  .src('**', config)
+  .dest('dist')
+  .then(files => console.log(files))
+  .catch(error => console.log(error))
+```
 
 
 ## Projects Using alphaX

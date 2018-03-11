@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/ulivz/alphax/master/.media/alphax.png" alt="">
-  <br><b><i>Fuel of scaffolding.</i></b>
+  <br><b><i>Fueling your scaffolding.</i></b>
 </p>
 
 ## Features
