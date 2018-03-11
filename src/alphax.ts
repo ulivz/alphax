@@ -1,8 +1,8 @@
 import path from 'path'
 import { EventEmitter } from 'events'
-import ware from 'ware'
 import * as es from 'event-stream'
 import * as File from 'vinyl'
+import ware from 'ware'
 import { src, dest, SrcOptions } from 'vinyl-fs'
 import { isArray, isFunction, isPromise, curryFileTransformer, isBuffer, getRenamerByConfig } from './utils'
 import { getRenameMiddleware } from './middlewares'
@@ -11,17 +11,7 @@ export type Middleware = (file: File, meta: any) => any
 export type Glob = string[] | string
 export type TransformFn = (contents: string, file: File) => Promise<string> | string
 export type Task = (app: AlphaX) => Promise<void> | void
-
-/**
- * A Filter that accepts the file path(relative),
- * return false will exclude the file.
- */
 export type Filter = (filepath: string) => string
-
-/**
- * A Renamer that accepts an old path (It's actually a relative path),
- * and returns the value as a new path
- */
 export type Renamer = (filepath: string) => string
 
 export interface Files {
