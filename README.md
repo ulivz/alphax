@@ -20,8 +20,15 @@ alphax provides very simple _JSON-like_ and _chained_ APIs that allow you to man
 
 BTW, alphax was named from the Greek initials _**α**_ and [spaceX](http://www.spacex.com/) I admire.
 
+
 ## Features
 
+* 🚀 Fast, based on stream.
+* 📦 Chained API.
+* 💅 Using middlewares to process each file.
+* 🚨 Asynchronous task control.
+* 🌈 Renaming files with a pure function or configuration.
+* 🎯 Filtering files with a pure function or configuration.
 
 
 ## Install
@@ -39,55 +46,55 @@ import alphax from 'alphax'
 const app = alphax()
 ```
 
-- Chained Style
+- **_Chained Style_**
 
-```js
-alphax()
-  .src('**')
-  .task(task1)
-  .task(task2)
-  .task(task3)
-  .use(file => file.content += Date.now())
-  .rename(filepath => filepath.replace('{name}', name))
-  .rename(filepath => filepath.replace('{age}', age))
-  .transform(content => content.replace('{name}', name))
-  .filter(filepath => filepath.endWith('.js'))
-  .filter(filepath => !filepath.startWith('test'))
-  .dest('dist')
-  .then(files => console.log(files))
-  .catch(error => console.log(error))
-```
+  ```js
+  alphax()
+    .src('**')
+    .task(task1)
+    .task(task2)
+    .task(task3)
+    .use(file => file.content += Date.now())
+    .rename(filepath => filepath.replace('{name}', name))
+    .rename(filepath => filepath.replace('{age}', age))
+    .transform(content => content.replace('{name}', name))
+    .filter(filepath => filepath.endWith('.js'))
+    .filter(filepath => !filepath.startWith('test'))
+    .dest('dist')
+    .then(files => console.log(files))
+    .catch(error => console.log(error))
+  ```
 
-- Config Style
+- **_Config Style_**
 
-```js
-const config = {
-  tasks: [task1, task3, task3],
-  use: file => file.content += Date.now(),
-  rename: {
-    '{name}': name,
-    '{age}': age
-  },
-  filter: {
-    'app.js': true,
-    'test.js': false
-  },
-  transform(content) {
-    return content.replace('{name}', name)
+  ```js
+  const config = {
+    tasks: [task1, task3, task3],
+    use: file => file.content += Date.now(),
+    rename: {
+      '{name}': name,
+      '{age}': age
+    },
+    filter: {
+      'app.js': true,
+      'test.js': false
+    },
+    transform(content) {
+      return content.replace('{name}', name)
+    }
   }
-}
-
-alphax()
-  .src('**', config)
-  .dest('dist')
-  .then(files => console.log(files))
-  .catch(error => console.log(error))
-```
+  
+  alphax()
+    .src('**', config)
+    .dest('dist')
+    .then(files => console.log(files))
+    .catch(error => console.log(error))
+  ```
 
 
 ## Projects Using alphaX
 
-- [**_poz_**](https://github.com/ulivz/poz): 🏹 Programmable scaffolding generator.
+- [**_poz_**](https://github.com/ulivz/poz): Programmable scaffolding generator. 🏹 
 - Feel free to add yours here :)
 
 
