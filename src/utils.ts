@@ -85,3 +85,14 @@ export function getRenamerByConfig(renameConfig: RenameConfig): (filepath: strin
     return filepath
   }
 }
+
+export function evaluate(exp: string | boolean, data: any) {
+  console.log(data)
+  /* eslint-disable no-new-func */
+  const fn = new Function('data', 'with (data) { return ' + exp + '}')
+  try {
+    return fn(data)
+  } catch (e) {
+    throw new Error('Error when evaluating filter condition: ' + exp)
+  }
+}

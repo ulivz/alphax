@@ -5,7 +5,7 @@ import * as File from 'vinyl'
 import match from 'minimatch'
 import ware from 'ware'
 import { src, dest, SrcOptions } from 'vinyl-fs'
-import { isArray, isFunction, isPromise, curryFileTransformer, isBuffer, getRenamerByConfig } from './utils'
+import { isArray, isFunction, isPromise, isBuffer, curryFileTransformer, getRenamerByConfig, evaluate } from './utils'
 import { getRenameMiddleware } from './middlewares'
 
 export type Middleware = (file: File, meta: any) => any
@@ -24,7 +24,7 @@ export interface RenameConfig {
 }
 
 export interface filtersConfig {
-  [pattern: string]: boolean
+  [pattern: string]: boolean | string
 }
 
 export interface Changelog {
@@ -32,10 +32,10 @@ export interface Changelog {
 }
 
 export interface AlphaXSrcOptions extends SrcOptions {
-  baseDir?: string;
-  rename?: RenameConfig;
-  filters?: filtersConfig;
-  transformFn?: TransformFn;
+  baseDir?: string
+  rename?: RenameConfig
+  filters?: filtersConfig
+  transformFn?: TransformFn
 }
 
 export class AlphaX extends EventEmitter {
@@ -52,6 +52,7 @@ export class AlphaX extends EventEmitter {
   public baseDir: string
   public transformFn: TransformFn
   public files: Files
+  public context: any
 
   constructor() {
     super()
@@ -69,6 +70,7 @@ export class AlphaX extends EventEmitter {
     transform,
     tasks = [],
     use = [],
+    context = {},
     ...options
   }: AlphaXSrcOptions = {}) {
     this.baseDir = baseDir
@@ -79,6 +81,7 @@ export class AlphaX extends EventEmitter {
     this.filtersConfig = filters
     this.transformFn = transform
     this.options = options
+    this.context = context
     options.cwd = options.cwd || baseDir
     return this
   }
@@ -139,7 +142,8 @@ export class AlphaX extends EventEmitter {
       this.filters.push((filepath: string) => {
         for (const glob of Object.keys(this.filtersConfig)) {
           if (match(filepath, glob, { dot: true })) {
-            if (!this.filtersConfig[glob]) {
+            const condition = this.filtersConfig[glob]
+            if (!evaluate(condition, Object.assign({}, this.meta, this.context))) {
               return null
             }
           }
@@ -193,7 +197,7 @@ export class AlphaX extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       collectStream
-        .on('end', () => resolve(this.files))
+        .on('end', () => resolve(this.fileMap()))
         .on('error', reject)
     })
   }
@@ -218,6 +222,9 @@ export class AlphaX extends EventEmitter {
   }
 
   private async transformFile(file: File) {
+
+    file.originalRelative = file.relative
+
     // 1. middleware
     try {
       await new Promise((resolve) => {
