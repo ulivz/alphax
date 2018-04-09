@@ -1,122 +1,149 @@
 import path from 'path'
 import alphaX from '../src/alphax'
 
-describe('alphax', () => {
-  test('base', async () => {
-    const app = alphaX()
-    await app
-      .src(path.join(__dirname, '/fixtures/package/**'), {
-        baseDir: path.join(__dirname, '/fixtures/package'),
-        filters: {
-          'lib': true,
-          'lib/util/**': false,
-          'style/**': false,
-          'index.js': true
-        },
-        rename: {
-          'lib': 'lib2',
-          '.js': '.ts'
-        },
-        transform(content, file) {
-          return ' ==== source name is ' + content
-        }
-      })
-      .dest(null)
-    expect(app.fileMap()).toMatchSnapshot()
+/**
+ * Create a alphaX app with pure src config.
+ * @param {Object} srcConfig
+ * @returns {AlphaX}
+ */
+function getApp(srcConfig?: Object = {}) {
+  const app = alphaX()
+  return app.src(path.join(__dirname, 'fixtures/package/**'), {
+    baseDir: path.join(__dirname, 'fixtures/package'),
+    transform(content, file) {
+      return `[${file.originalRelative}]`
+    },
+    ...srcConfig
   })
+}
 
-  test('cwd', async () => {
-    const app = alphaX()
-    const prevCwd = process.cwd()
-    process.chdir('test/fixtures')
+test('should basic function work - using cwd as baseDir', async () => {
+  const app = alphaX()
+  const prevCwd = process.cwd()
+  process.chdir('test/fixtures/package')
 
-    await app
-      .src('**', {
-        baseDir: path.resolve('package'),
-        filters: {
-          'lib': true,
-          'lib/util/**': false,
-          'style/**': false,
-          'index.js': true
-        },
-        rename: {
-          'lib': 'lib2',
-          '.js': '.ts'
-        },
-        transform(content, file) {
-          return ' ==== source name is ' + content
-        }
-      })
-      .dest(null)
+  const files = await app
+    .src('**', {
+      filters: {
+        'lib': true,
+        'lib/util/**': false,
+        'style/**': false,
+        'index.js': true
+      },
+      rename: {
+        'lib': 'lib2',
+        '.js': '.ts'
+      },
+      transform(content) {
+        return `[${content.replace('\n', '')}]`
+      }
+    })
+    .dest(null)
 
-    expect(app.fileMap()).toMatchSnapshot()
-    process.chdir(prevCwd)
+  expect(files).toMatchSnapshot()
+  process.chdir(prevCwd)
+})
+
+
+test('should basic function work - customize baseDir', async () => {
+  const app = getApp({
+    filters: {
+      'lib': true,
+      'lib/util/**': false,
+      'style/**': false,
+      'index.js': true
+    },
+    rename: {
+      'lib': 'lib2',
+      '.js': '.ts'
+    }
   })
+  console.log(app)
+  const files = await app.dest(null)
+  expect(files).toMatchSnapshot()
+})
 
-  test('filter function - 1', async () => {
-    const app = alphaX()
-    const prevCwd = process.cwd()
-    process.chdir('test/fixtures')
 
-    await app
-      .src('**', {
-        baseDir: path.resolve('package'),
-        transform(content, file) {
-          return file.relative + ': ' + content
-        }
-      })
-      .filter(filepath => filepath.indexOf('style') === -1)
-      .dest(null)
+test('should filter function work - normal', async () => {
+  const app = getApp()
+  const files = await app
+    .filter(filepath => filepath.indexOf('style') === -1)
+    .dest(null)
+  expect(files).toMatchSnapshot()
+})
 
-    expect(app.fileMap()).toMatchSnapshot()
-    process.chdir(prevCwd)
+test('should filter function work - reverse', async () => {
+  const app = getApp()
+  const files = await app
+    .filter(filepath => filepath.indexOf('style') > -1)
+    .dest(null)
+  expect(files).toMatchSnapshot()
+})
+
+test('should rename function work', async () => {
+  const app = getApp()
+  const files = await app
+    .rename(filepath => {
+      if (filepath === 'index.js') {
+        return 'main.js'
+      }
+      if (filepath.indexOf('util') > -1) {
+        return filepath.replace('util', 'utils')
+      }
+      return filepath
+    })
+    .dest(null)
+  expect(files).toMatchSnapshot()
+})
+
+test('should conditional filter work - exclude', async () => {
+  const app = getApp({
+    context: {
+      mode: 'js'
+    },
+    filters: {
+      'lib/**': 'mode === "ts"',
+    }
   })
+  const files = await app.dest(null)
+  expect(files).toMatchSnapshot()
+})
 
-  test('filter function - 2', async () => {
-    const app = alphaX()
-    const prevCwd = process.cwd()
-    process.chdir('test/fixtures')
-
-    await app
-      .src('**', {
-        baseDir: path.resolve('package'),
-        transform(content, file) {
-          return file.relative + ': ' + content
-        }
-      })
-      .filter(filepath => filepath.indexOf('style') > -1)
-      .dest(null)
-
-    expect(app.fileMap()).toMatchSnapshot()
-    process.chdir(prevCwd)
+test('should conditional filter work - include', async () => {
+  const app = getApp({
+    context: {
+      mode: 'js'
+    },
+    filters: {
+      'lib/**': 'mode === "js"',
+    }
   })
+  const files = await app.dest(null)
+  expect(files).toMatchSnapshot()
+})
 
-  test('rename function', async () => {
-    const app = alphaX()
-    const prevCwd = process.cwd()
-    process.chdir('test/fixtures')
-
-    await app
-      .src('**', {
-        baseDir: path.resolve('package'),
-        transform(content, file) {
-          return file.relative + ': ' + content
-        }
-      })
-      .rename(filepath => {
-        if (filepath === 'index.js') {
-          return 'main.js'
-        }
-        if (filepath.indexOf('util') > -1) {
-          return filepath.replace('util', 'utils')
-        }
-        return filepath
-      })
-      .dest(null)
-
-    expect(app.fileMap()).toMatchSnapshot()
-    process.chdir(prevCwd)
+test('should conditional renamer work - normal', async () => {
+  const app = getApp({
+    context: {
+      mode: 'js'
+    },
+    rename: {
+      'lib.js': "mode === 'js' ? 'lib.js' : null"
+    }
   })
+  const files = await app.dest(null)
+  expect(files).toMatchSnapshot()
+})
 
-
+test('should conditional renamer work - reverse', async () => {
+  const app = getApp({
+    context: {
+      mode: 'js'
+    },
+    rename: {
+      'lib.js': "mode === 'js' ? 'lib.js' : null"
+    }
+  })
+  const files = await app.dest(null)
+  expect(files).toMatchSnapshot()
 })

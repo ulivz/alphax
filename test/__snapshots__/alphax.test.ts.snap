@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should basic function work - customize baseDir 1`] = `
+Object {
+  "index.ts": "[index.js]",
+  "lib2/core/core.ts": "[lib/core/core.js]",
+  "lib2/lib2.ts": "[lib/lib.js]",
+}
+`;
+
+exports[`should basic function work - using cwd as baseDir 1`] = `
+Object {
+  "index.ts": "[index.js]",
+  "lib2/core/core.ts": "[core.js]",
+  "lib2/lib2.ts": "[lib.js]",
+}
+`;
+
+exports[`should conditional filter work - exclude 1`] = `
+Object {
+  "index.js": "[index.js]",
+  "style/index.css": "[style/index.css]",
+}
+`;
+
+exports[`should conditional filter work - include 1`] = `
+Object {
+  "index.js": "[index.js]",
+  "lib/core/core.js": "[lib/core/core.js]",
+  "lib/lib.js": "[lib/lib.js]",
+  "lib/util/util.js": "[lib/util/util.js]",
+  "style/index.css": "[style/index.css]",
+}
+`;
+
+exports[`should conditional renamer work 1`] = `
+Object {
+  "index.js": "[index.js]",
+  "lib/core/core.js": "[lib/core/core.js]",
+  "lib/mode === 'ts' ? 'lib.js' : null": "[lib/lib.js]",
+  "lib/util/util.js": "[lib/util/util.js]",
+  "style/index.css": "[style/index.css]",
+}
+`;
+
+exports[`should filter function work - normal 1`] = `
+Object {
+  "index.js": "[index.js]",
+  "lib/core/core.js": "[lib/core/core.js]",
+  "lib/lib.js": "[lib/lib.js]",
+  "lib/util/util.js": "[lib/util/util.js]",
+}
+`;
+
+exports[`should filter function work - reverse 1`] = `
+Object {
+  "style/index.css": "[style/index.css]",
+}
+`;
+
+exports[`should rename function work 1`] = `
+Object {
+  "lib/core/core.js": "[lib/core/core.js]",
+  "lib/lib.js": "[lib/lib.js]",
+  "lib/utils/util.js": "[lib/util/util.js]",
+  "main.js": "[index.js]",
+  "style/index.css": "[style/index.css]",
+}
+`;
