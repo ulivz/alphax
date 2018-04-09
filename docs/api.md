@@ -99,10 +99,23 @@ const app = alphax()
   
   The internal [_**rename**_](#rename) feature's implementation is also based on using middleware. 
 
+
+#### context 
+
+<p class="warning">
+  Added in v1.0.3
+</p>
+
+- Type: `Object`
+- Required: `false`
+- Default: `{}`
+
+In many cases, especially when developing a scaffolding tool, all the user's input will be useful information - we call it as a type of `context`. In alphaX, there is already a built-in context [meta](#app-meta). The `meta` and incoming `context` will be combined internally to implement some of the more advanced features, such as: [Conditional Manipulation](/advanced/conditional-manipulation)
+
+
 <p class="tip">
   Rest available options please refers to [**_vinyl-fs_**](https://github.com/gulpjs/vinyl-fs).
 </p>
- 
   
 ## app.dest([outDir], [options])
 
