@@ -49,7 +49,6 @@ describe('alphax', () => {
       })
       .dest(null)
 
-    console.log(app.renameChangelog)
     expect(app.fileMap()).toMatchSnapshot()
     process.chdir(prevCwd)
   })
