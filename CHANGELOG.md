@@ -1,3 +1,14 @@
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/ULIVZ/alphaX/compare/v1.0.2...v1.0.3) (2018-04-09)
+
+
+### Features
+
+* support conditional filter ([01bfaaa](https://github.com/ULIVZ/alphaX/commit/01bfaaa))
+* support conditional renamer ([223d609](https://github.com/ULIVZ/alphaX/commit/223d609))
+
+
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/ULIVZ/alphaX/compare/v1.0.1...v1.0.2) (2018-04-09)
 
