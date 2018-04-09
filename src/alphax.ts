@@ -12,7 +12,7 @@ export type Middleware = (file: File, meta: any) => any
 export type Glob = string[] | string
 export type TransformFn = (contents: string, file: File) => Promise<string> | string
 export type Task = (app: AlphaX) => Promise<void> | void
-export type Filter = (filepath: string) => string
+export type Filter = (filepath: string) => boolean
 export type Renamer = (filepath: string) => string
 
 export interface Files {
@@ -166,8 +166,12 @@ export class AlphaX extends EventEmitter {
 
     const transform = curryFileTransformer((file: File) => this.transformFile(file))
 
-    const filter = curryFileTransformer((file: File) =>
-      this.filters.some(_filter => !_filter(file.relative)) ? null : true)
+    const filter = curryFileTransformer((file: File) => {
+      if (file.isDirectory() || this.filters.some(_filter => !_filter(file.relative))) {
+        return null
+      }
+      return true
+    })
 
     const collect = curryFileTransformer((file: File) => {
       const { relative } = file
