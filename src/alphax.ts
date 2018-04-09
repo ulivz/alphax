@@ -2,6 +2,7 @@ import path from 'path'
 import { EventEmitter } from 'events'
 import * as es from 'event-stream'
 import * as File from 'vinyl'
+import match from 'minimatch'
 import ware from 'ware'
 import { src, dest, SrcOptions } from 'vinyl-fs'
 import { isArray, isFunction, isPromise, curryFileTransformer, isBuffer, getRenamerByConfig } from './utils'
@@ -135,10 +136,15 @@ export class AlphaX extends EventEmitter {
     this.use(getRenameMiddleware(this.renamers, this.renameChangelog))
 
     if (this.filtersConfig) {
-      Object.keys(this.filtersConfig).forEach(fileName => {
-        if (!this.filtersConfig[fileName]) {
-          this.patterns.push('!' + path.join(this.baseDir, fileName))
+      this.filters.push((filepath: string) => {
+        for (const glob of Object.keys(this.filtersConfig)) {
+          if (match(filepath, glob, { dot: true })) {
+            if (!this.filtersConfig[glob]) {
+              return null
+            }
+          }
         }
+        return true
       })
     }
 
