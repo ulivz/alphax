@@ -8,13 +8,14 @@ export function getRenameMiddleware(renamers: Renamer[], changelog: Changelog) {
     changelog[originalName] = []
     changelog[originalName].push(originalName)
     renamers.forEach(renamer => {
+      let oldName = file.relative
       let newName
       try {
-        newName = renamer(file.relative)
+        newName = renamer(oldName)
       } catch (error) {
         console.log(error)
       }
-      if (newName) {
+      if (newName !== oldName) {
         file.path = path.join(file.base, newName)
         changelog[originalName].push(file.relative)
       }

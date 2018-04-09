@@ -77,17 +77,27 @@ export function curryFileTransformer(fn) {
   }
 }
 
-export function getRenamerByConfig(renameConfig: RenameConfig): (filepath: string) => string {
+export function getRenamerByConfig(renameConfig: RenameConfig, context: any): (filepath: string) => string {
   return function (filepath: string) {
     Object.keys(renameConfig).forEach(pattern => {
-      filepath = filepath.replace(new RegExp(pattern, 'g'), renameConfig[pattern])
+      let condition = renameConfig[pattern]
+      if (/(\?|\=)/.test(condition)) {
+        try {
+          condition = evaluate(condition, context)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      if (isNull(condition)) {
+        return
+      }
+      filepath = filepath.replace(new RegExp(pattern, 'g'), condition)
     })
     return filepath
   }
 }
 
 export function evaluate(exp: string | boolean, data: any) {
-  console.log(data)
   /* eslint-disable no-new-func */
   const fn = new Function('data', 'with (data) { return ' + exp + '}')
   try {

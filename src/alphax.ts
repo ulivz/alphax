@@ -133,7 +133,7 @@ export class AlphaX extends EventEmitter {
 
     // If there is rename config, convert it to a renamer function
     if (this.renameConfig) {
-      this.renamers.push(getRenamerByConfig(this.renameConfig))
+      this.renamers.push(getRenamerByConfig(this.renameConfig, this.combinedContext()))
     }
     // Use rename middleware
     this.use(getRenameMiddleware(this.renamers, this.renameChangelog))
@@ -143,7 +143,7 @@ export class AlphaX extends EventEmitter {
         for (const glob of Object.keys(this.filtersConfig)) {
           if (match(filepath, glob, { dot: true })) {
             const condition = this.filtersConfig[glob]
-            if (!evaluate(condition, Object.assign({}, this.meta, this.context))) {
+            if (!evaluate(condition, this.combinedContext())) {
               return null
             }
           }
@@ -219,6 +219,10 @@ export class AlphaX extends EventEmitter {
     const list: string[] = []
     Object.keys(this.files).forEach(file => list.push(file))
     return list
+  }
+
+  private combinedContext() {
+    return { ...this.meta, ...this.context }
   }
 
   private async transformFile(file: File) {

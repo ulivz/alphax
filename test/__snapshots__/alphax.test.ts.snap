@@ -33,11 +33,21 @@ Object {
 }
 `;
 
-exports[`should conditional renamer work 1`] = `
+exports[`should conditional renamer work - normal 1`] = `
 Object {
   "index.js": "[index.js]",
   "lib/core/core.js": "[lib/core/core.js]",
-  "lib/mode === 'ts' ? 'lib.js' : null": "[lib/lib.js]",
+  "lib/lib.js": "[lib/lib.js]",
+  "lib/util/util.js": "[lib/util/util.js]",
+  "scss/index.css": "[style/index.css]",
+}
+`;
+
+exports[`should conditional renamer work - reverse 1`] = `
+Object {
+  "index.js": "[index.js]",
+  "lib/core/core.js": "[lib/core/core.js]",
+  "lib/lib.js": "[lib/lib.js]",
   "lib/util/util.js": "[lib/util/util.js]",
   "style/index.css": "[style/index.css]",
 }

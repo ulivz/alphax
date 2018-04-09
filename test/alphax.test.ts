@@ -58,7 +58,6 @@ test('should basic function work - customize baseDir', async () => {
       '.js': '.ts'
     }
   })
-  console.log(app)
   const files = await app.dest(null)
   expect(files).toMatchSnapshot()
 })
@@ -125,10 +124,10 @@ test('should conditional filter work - include', async () => {
 test('should conditional renamer work - normal', async () => {
   const app = getApp({
     context: {
-      mode: 'js'
+      mode: 'scss'
     },
     rename: {
-      'lib.js': "mode === 'js' ? 'lib.js' : null"
+      'style': "mode === 'scss' ? 'scss' : null"
     }
   })
   const files = await app.dest(null)
@@ -138,10 +137,10 @@ test('should conditional renamer work - normal', async () => {
 test('should conditional renamer work - reverse', async () => {
   const app = getApp({
     context: {
-      mode: 'js'
+      mode: 'less'
     },
     rename: {
-      'lib.js': "mode === 'js' ? 'lib.js' : null"
+      'style': "mode === 'scss' ? 'scss' : null"
     }
   })
   const files = await app.dest(null)
