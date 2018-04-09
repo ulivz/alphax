@@ -58,7 +58,8 @@ const app = alphax()
   .src('**', {
     context,
     rename: {
-      'index.css': 'mode === "scss" ? "index.scss" : null'
+      'index.css':
+        'mode === "scss" ? "index.scss" : null'
     }
   })
 ```
