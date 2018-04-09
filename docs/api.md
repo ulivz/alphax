@@ -47,7 +47,7 @@ const app = alphax()
 
 #### filters
 
-- Type: `{ [key: string]: string }`
+- Type: `{ [key: string]: boolean }`
 - Required: `false`
 
   A plain object for filtering files, whose key can be a relative file path or glob string:
