@@ -1,6 +1,6 @@
 # Condiitonal Manipulation
 
-With the provided functional programming API, we can implement the conditional manipulation function manually, but it's exciting to know that starting from `@1.0.3`, `alphaX` will support built-in conditional filtering and renaming.
+With the provided [functional programming API](/api?id=app-filterfilter), we can implement the conditional manipulation function manually, but it's exciting to know that starting from `@1.0.3`, `alphaX` will support built-in conditional filtering and renaming.
 
 Above all, assuming your source tree is like this:
 
@@ -64,7 +64,7 @@ const app = alphax()
   })
 ```
 
-In the above example, the `index.css` will be renamed to `index.scss` only if `context.mode` is equal to `scss`, the `null` is to tell alphaX to keep the original file name.
+In the above example, the `index.css` will be renamed to `index.scss` only if `context.mode` is equal to `scss`, and `null` is to tell alphaX to keep the original file name.
 
 
 
