@@ -20,7 +20,7 @@ Obviously, we can exclude the `lib/**` by configuring the following filters.
 }
 ```
 
-If you want to decide at runtime whether the glob's target file is included, You can do this:
+If you want to decide whether the glob's target file is included at runtime, You can do this:
 
 ```js
 // This context object stores the user's input information

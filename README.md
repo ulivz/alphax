@@ -26,10 +26,10 @@ BTW, alphaX was named from the Greek initials _**α**_ and [spaceX](http://www.s
 
 * 🚀 Fast, based on stream.
 * 📦 Chained API.
-* 💅 Using middlewares to process each file.
+* 💅 Using **middlewares** to process each file.
 * 🚨 Asynchronous task control.
-* 🌈 Renaming files with a pure function or configuration.
-* 🎯 Filtering files with a pure function or configuration.
+* 🌈 Filter or Rename files with a pure function or configuration.
+* 💎 Support **_Condiitonal Manipulation_**
 
 
 ## Install
