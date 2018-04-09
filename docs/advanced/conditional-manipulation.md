@@ -1,4 +1,4 @@
-# Condiitonal Manipulation
+# Conditional Manipulation
 
 With the provided [functional programming API](/api?id=app-filterfilter), we can implement the conditional manipulation function manually, but it's exciting to know that starting from `@1.0.3`, `alphaX` will support built-in conditional filtering and renaming.
 
@@ -12,7 +12,7 @@ Above all, assuming your source tree is like this:
     └── index.css
 ```
 
-## Condiitonal Filtering
+## Conditional Filtering
 
 Usually, we can exclude the `lib/**` by configuring like this:
 
@@ -47,9 +47,9 @@ In the above example, `lib/**` will be included only if `context.mode` is equal 
   The values of each filter supports any legal javascript expression.
 </p>
 
-## Condiitonal Renaming
+## Conditional Renaming
 
-Similar to `Condiitonal Filtering`, you can decide whether to rename a file at runtime based on the dynamic context:
+Similar to `Conditional Filtering`, you can decide whether to rename a file at runtime based on the dynamic context:
 
 ```js
 const context = {}

@@ -29,7 +29,7 @@ BTW, alphaX was named from the Greek initials _**α**_ and [spaceX](http://www.s
 * 💅 Using **middlewares** to process each file.
 * 🚨 Asynchronous task control.
 * 🌈 Filter or Rename files with a pure function or configuration.
-* 💎 Support **_Condiitonal Manipulation_**
+* 💎 Support **_Conditional Manipulation_**
 
 
 ## Install
