@@ -17,7 +17,8 @@
     "test": "npm run lint && jest",
     "lint": "xo src/**",
     "prepublish": "npm run build",
-    "build": "bili"
+    "build": "bili",
+    "website": "w7 ./docs"
   },
   "author": "ULIVZ <chl814@foxmail.com>",
   "license": "MIT",
