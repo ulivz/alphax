@@ -7,10 +7,10 @@
 
 * 🚀 Fast, based on stream.
 * 📦 Chained API.
-* 💅 Using middlewares to process each file.
+* 💅 Using **_middlewares_** to process each file.
 * 🚨 Asynchronous task control.
-* 🌈 Renaming files with a pure function or configuration.
-* 🎯 Filtering files with a pure function or configuration.
+* 🌈 Filter or Rename files with a pure function or configuration.
+* 💎 Support **_Conditional Manipulation_**
 
 ## Quick Start
 
@@ -21,4 +21,4 @@ import alphax from 'alphax'
 alphax().src('./src/**').dest('./dist')
 ```
 
-Of course, alphax is far more than that, check out the [**_API_**](/api) and [**_example/scaffolding_**](/example/scaffolding)
+Of course, alphax is far more than that, check out the [**_API_**](/api).

@@ -26,7 +26,7 @@ BTW, alphaX was named from the Greek initials _**α**_ and [spaceX](http://www.s
 
 * 🚀 Fast, based on stream.
 * 📦 Chained API.
-* 💅 Using **middlewares** to process each file.
+* 💅 Using **_middlewares_** to process each file.
 * 🚨 Asynchronous task control.
 * 🌈 Filter or Rename files with a pure function or configuration.
 * 💎 Support **_Conditional Manipulation_**
@@ -93,7 +93,7 @@ alphax()
   .catch(error => console.log(error))
 ```
 
-For detailed usage please head to [v2js.com/alphax](http://www.v2js.com/alphax).
+For detailed usage please head to [**_Documentation_**](http://www.v2js.com/alphax).
 
 ## Projects Using alphaX
 
