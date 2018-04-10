@@ -26,7 +26,7 @@ const app = alphax()
   })
 ```
 
-If you want to decide whether the glob's target file is included at runtime, you can do this:
+If you want to decide whether the glob's target file is included at runtime, you can use [**_context_**](/api?id=context) option:
 
 ```js
 const context = {}
