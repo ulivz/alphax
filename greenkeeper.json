@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "example/scaffolding/package.json",
+        "package.json"
+      ]
+    }
+  }
+}
